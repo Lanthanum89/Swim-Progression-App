@@ -16,7 +16,7 @@ A personal swim progress tracker, built for a friend — but open for anyone to 
 ## File structure
 
 ```
-Beth-swim-app/
+Swim-Progression-App/
   index.html    ← the entire app
   CLAUDE.md     ← this file
   PLAN.md       ← feature roadmap

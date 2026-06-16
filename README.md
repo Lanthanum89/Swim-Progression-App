@@ -1,10 +1,6 @@
 # Shrimpy Swims
 
-<<<<<<< HEAD
-A simple, mobile-friendly personal swim progress tracker — built for a friend, but open to anyone who wants to use it or contribute.
-=======
-A simple, mobile-friendly swim progress tracker for a friend.
->>>>>>> ca33d1b8863dd0c479d4f0629fdf735f915e74ba
+A simple, mobile-friendly personal swim progress tracker for a friend — open to anyone who wants to use it or contribute.
 
 Log each swim and watch cumulative distance move along fun real-world routes (like the English Channel or Loch Ness), with milestone celebrations along the way.
 
@@ -19,6 +15,7 @@ Log each swim and watch cumulative distance move along fun real-world routes (li
   - pool lengths
 - Session history and route management
 - Data backup and restore (JSON export/import)
+- SVG route map — your 🦐 moves along an illustrated path as you swim
 - Works great on GitHub Pages or Netlify
 
 ## Tech Stack
@@ -34,7 +31,7 @@ Log each swim and watch cumulative distance move along fun real-world routes (li
 ## Project Structure
 
 ```text
-Beth-swim-app/
+Swim-Progression-App/
   index.html      # entire app UI + logic
   manifest.json   # PWA manifest
   sw.js           # service worker
@@ -88,10 +85,14 @@ Data is stored in browser `localStorage` under these keys:
 
 ## UX/Design Notes
 
-- Mobile-first (optimized for small screens)
+- Mobile-first (optimised for small screens)
 - Simple flow for non-technical use
 - Tap targets sized for touch
 - Uses toast messages for user feedback
+
+## Contributing
+
+Contributions are welcome. Open an issue or pull request on GitHub.
 
 ## Notes for Maintainers
 
@@ -101,5 +102,4 @@ Data is stored in browser `localStorage` under these keys:
 
 ## License
 
-No license file is currently included.
-Add one if you plan to distribute or open-source this project.
+MIT License — see [LICENSE](LICENSE) for details.
