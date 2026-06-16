@@ -712,6 +712,11 @@ header { position: sticky; overflow: visible; }
         </div>
 
         <div class="form-group">
+          <label>Pace per 100m <span class="opt">(optional)</span></label>
+          <input type="text" id="log-pace" placeholder="e.g. 1:45" inputmode="text">
+        </div>
+
+        <div class="form-group">
           <label>Notes <span class="opt">(optional)</span></label>
           <input type="text" id="log-notes" placeholder="e.g. Felt strong today!">
         </div>
@@ -757,6 +762,20 @@ header { position: sticky; overflow: visible; }
 // ── Preset routes ────────────────────────────────────────────────────────────
 
 const PRESETS = [
+  {
+    id: 'nyad',
+    name: 'The Nyad',
+    emoji: '🇨🇺',
+    desc: 'Havana, Cuba to Key West, Florida',
+    km: 177.7,
+    milestones: [
+      { km: 0,     label: 'Havana, Cuba 🇨🇺' },
+      { km: 44,    label: 'First night conquered' },
+      { km: 88.9,  label: 'Halfway across the Florida Straits!' },
+      { km: 133,   label: 'Florida Keys in sight' },
+      { km: 177.7, label: 'Key West, Florida 🇺🇸 — Find a way!' }
+    ]
+  },
   {
     id: 'english-channel',
     name: 'English Channel',
@@ -856,7 +875,7 @@ const saveS = (key, v)  => localStorage.setItem(key, String(v));
 
 const getSessions    = ()  => load(K.sessions);
 const getCustoms     = ()  => load(K.customs);
-const getActiveId    = ()  => loadS(K.route) || 'english-channel';
+const getActiveId    = ()  => loadS(K.route) || 'nyad';
 const getPoolLen     = ()  => parseFloat(loadS(K.poolLen) || '25');
 const getAllRoutes    = ()  => [...PRESETS, ...getCustoms()];
 const getActiveRoute = ()  => getAllRoutes().find(r => r.id === getActiveId()) || PRESETS[0];
@@ -994,6 +1013,7 @@ let activeUnit = 'km';
 
 function initLog() {
   document.getElementById('log-dist').value  = '';
+  document.getElementById('log-pace').value  = '';
   document.getElementById('log-notes').value = '';
   document.getElementById('log-date').value  = new Date().toISOString().split('T')[0];
   document.getElementById('pool-settings').style.display = 'none';
@@ -1037,6 +1057,7 @@ function setCustomPool(v) {
 function submitLog() {
   const raw  = parseFloat(document.getElementById('log-dist').value);
   const date = document.getElementById('log-date').value;
+  const pace = document.getElementById('log-pace').value.trim();
   const note = document.getElementById('log-notes').value.trim();
 
   if (!raw || raw <= 0) { showToast('Please enter a distance'); return; }
@@ -1051,6 +1072,7 @@ function submitLog() {
     dist_km:  distKm,
     unit:     activeUnit,
     unit_val: raw,
+    pace,
     note,
     route_id: getActiveId()
   };
@@ -1103,6 +1125,7 @@ function renderHistory() {
         <div class="session-info">
           <div class="session-dist">${distLabel}</div>
           <div class="session-date">${fmtDate(s.date)}</div>
+          ${s.pace ? `<div class="session-note">⏱ ${s.pace} /100m</div>` : ''}
           ${s.note ? `<div class="session-note">"${s.note}"</div>` : ''}
         </div>
         <button class="del-btn" onclick="deleteSession('${s.id}')" title="Delete">✕</button>
@@ -1229,7 +1252,7 @@ function delRoute(id) {
   if (!confirm('Delete this route and all its swims?')) return;
   save(K.customs,  getCustoms().filter(r => r.id !== id));
   save(K.sessions, getSessions().filter(s => s.route_id !== id));
-  if (getActiveId() === id) saveS(K.route, 'english-channel');
+  if (getActiveId() === id) saveS(K.route, 'nyad');
   renderRoutes();
   showToast('Route deleted');
 }
