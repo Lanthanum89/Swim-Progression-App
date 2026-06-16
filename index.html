@@ -37,12 +37,16 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
+html { height: -webkit-fill-available; }
+
 body {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding-bottom: var(--nav-h);
+  min-height: 100dvh;
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  overscroll-behavior-y: none;
 }
 
 #app { max-width: 480px; margin: 0 auto; }
@@ -67,7 +71,9 @@ nav {
   background: var(--card);
   border-top: 1px solid var(--border);
   display: flex;
-  height: var(--nav-h);
+  align-items: flex-start;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   z-index: 10;
   box-shadow: 0 -2px 12px rgba(147,51,234,0.1);
 }
