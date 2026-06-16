@@ -28,15 +28,15 @@
 ### Tier 2 — Medium effort
 
 - [ ] **Stats page / charts** — monthly distance bar chart, personal bests, average per session. Use a lightweight canvas chart (no library needed).
-- [ ] **Route completion history** — if Beth finishes the English Channel and starts again, record each "crossing" with its date and number of swims
+- [ ] **Route completion history** — if the user finishes the English Channel and starts again, record each "crossing" with its date and number of swims
 - [ ] **Share card** — a "Share my progress" button that generates a screenshot-ready card (route name, % done, total distance) using `html2canvas` or a Canvas draw
-- [ ] **Notes on milestones** — Beth can write a note when she hits a milestone ("I did it! Legs felt like jelly but made it to Urquhart Castle")
+- [ ] **Notes on milestones** — user can write a note when hitting a milestone ("I did it! Legs felt like jelly but made it to Urquhart Castle")
 
 ### Tier 3 — Larger scope
 
 - [ ] **Supabase backend** — cross-device sync. Schema already exists from prior prototype. Would replace localStorage helpers; no UI changes needed. Requires pasting two API keys.
 - [ ] **Service worker / offline mode** — cache the app shell so it works without internet once loaded (requires a second JS file)
-- [ ] **Route map** — show Beth's position as a pin on a simplified route illustration (SVG path or a static map image). The English Channel lends itself well to this.
+- [x] **Route map** — SVG illustrated map showing the user's 🦐 position along the route, with milestone dots and a progress stroke. Built for all 7 preset routes.
 
 ---
 
@@ -46,5 +46,5 @@
 |----------|--------|
 | Where to host? GitHub Pages or Netlify | Undecided — either works |
 | Should milestones for custom routes be customisable? | Not yet — auto-generated at 25/50/75/100% |
-| Does Beth want push notifications / reminders? | Not planned — would require service worker + permission |
-| Does Beth ever want to share the app with others? | Not planned — currently single-user by design |
+| Push notifications / reminders? | Not planned — would require service worker + permission |
+| Share the app with others? | Anyone welcome to use or contribute — see README |

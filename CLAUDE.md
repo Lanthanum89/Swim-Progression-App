@@ -2,10 +2,10 @@
 
 ## What this is
 
-A personal swim progress tracker for Beth. She logs swims; the app visualises cumulative distance as movement along a named route (English Channel, Loch Ness, etc.). Think a fundraising progress bar but personal and ongoing.
+A personal swim progress tracker, built for a friend — but open for anyone to use or contribute to. The user logs swims; the app visualises cumulative distance as movement along a named route (English Channel, Loch Ness, etc.). Think a fundraising progress bar but personal and ongoing.
 
-**End user:** Beth — non-technical. UX must be simple and low-friction.  
-**Maintainer:** Laura.
+**End user:** non-technical swimmer. UX must be simple and low-friction.  
+**Maintainer:** project owner.
 
 ## Stack
 

@@ -568,6 +568,10 @@ select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 [data-theme="dark"] input, [data-theme="dark"] select { color: var(--text); }
 [data-theme="dark"] .toast { background: linear-gradient(135deg, #3b1f80, #6b25a0); }
 
+/* ── Route map ───────────────────────────────────────────────────────────── */
+.map-wrap { border-radius: var(--r); overflow: hidden; margin-bottom: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); }
+.route-map-svg { width: 100%; height: auto; display: block; }
+
 .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0 16px; }
 
 /* ── Animated header waves ───────────────────────────────────────────────── */
@@ -921,6 +925,117 @@ function goTo(name) {
 
 // ── Home panel ───────────────────────────────────────────────────────────────
 
+// ── Route map data & rendering ───────────────────────────────────────────────
+
+const ROUTE_MAP_DATA = {
+  'nyad': {
+    path:     'M 55 130 C 100 112 155 86 198 68 C 241 50 278 38 306 30',
+    gradient: ['#0a2a4a', '#1a6090'],
+    start:    { x: 44,  y: 136, emoji: '🇨🇺', label: 'Havana'   },
+    end:      { x: 312, y: 24,  emoji: '🇺🇸', label: 'Key West' }
+  },
+  'english-channel': {
+    path:     'M 46 98 C 120 84 220 76 312 68',
+    gradient: ['#1e3a4a', '#3a7090'],
+    start:    { x: 34,  y: 104, emoji: '🌊', label: 'Dover',  anchor: 'start' },
+    end:      { x: 322, y: 62,  emoji: '🇫🇷', label: 'Calais', anchor: 'end'   }
+  },
+  'lake-windermere': {
+    path:     'M 180 138 C 168 110 192 80 178 22',
+    gradient: ['#1a3a4a', '#3a8090'],
+    start:    { x: 180, y: 142, emoji: '⛵',  label: 'Lakeside'  },
+    end:      { x: 178, y: 16,  emoji: '🏔️', label: 'Ambleside' }
+  },
+  'loch-ness': {
+    path:     'M 38 82 C 110 68 228 94 320 80',
+    gradient: ['#0a180a', '#1a4020'],
+    start:    { x: 28,  y: 86,  emoji: '🏰', label: 'Fort Augustus', anchor: 'start' },
+    end:      { x: 332, y: 74,  emoji: '🦕', label: 'Lochend',       anchor: 'end'   }
+  },
+  'north-channel': {
+    path:     'M 288 46 C 244 68 186 96 72 126',
+    gradient: ['#1a2a35', '#2a6070'],
+    start:    { x: 300, y: 38,  emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', label: 'Scotland', anchor: 'end'   },
+    end:      { x: 58,  y: 132, emoji: '🍀', label: 'Ireland',  anchor: 'start' }
+  },
+  'strait-of-gibraltar': {
+    path:     'M 74 46 C 128 68 208 100 284 122',
+    gradient: ['#0d4060', '#1a90b8'],
+    start:    { x: 62,  y: 38,  emoji: '🇪🇸', label: 'Tarifa',  anchor: 'start' },
+    end:      { x: 296, y: 128, emoji: '🇲🇦', label: 'Tangier', anchor: 'end'   }
+  },
+  'thames': {
+    path:     'M 28 122 C 72 138 118 88 168 80 C 218 72 262 88 296 66 C 316 58 330 55 334 54',
+    gradient: ['#1a2a18', '#2a5828'],
+    start:    { x: 18,  y: 128, emoji: '🌿', label: 'Source',  anchor: 'start' },
+    end:      { x: 340, y: 48,  emoji: '🌊', label: 'The Sea', anchor: 'end'   }
+  }
+};
+
+function buildRouteMap(route, pct) {
+  const d = ROUTE_MAP_DATA[route.id];
+  if (!d) return '';
+  const gId     = 'mg-' + route.id;
+  const sAnchor = d.start.anchor || 'middle';
+  const eAnchor = d.end.anchor   || 'middle';
+  const sLabelY = d.start.y > 120 ? d.start.y - 18 : d.start.y + 14;
+  const eLabelY = d.end.y   > 120 ? d.end.y   - 18 : d.end.y   + 14;
+  const dots    = (route.milestones || [])
+    .filter(m => m.km > 0 && m.km < route.km)
+    .map(m => `<circle class="ms-dot" data-pct="${m.km / route.km}" r="4" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>`)
+    .join('');
+  return `<div class="map-wrap"><svg id="msvg-${route.id}" viewBox="0 0 360 158" class="route-map-svg" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="${gId}" x1="0" y1="0" x2="0.6" y2="1">
+    <stop offset="0%" stop-color="${d.gradient[0]}"/>
+    <stop offset="100%" stop-color="${d.gradient[1]}"/>
+  </linearGradient></defs>
+  <rect width="360" height="158" fill="url(#${gId})"/>
+  <path d="M 0 128 Q 90 118 180 128 Q 270 138 360 128" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="none"/>
+  <path d="M 0 144 Q 90 134 180 144 Q 270 154 360 144" stroke="rgba(255,255,255,0.03)" stroke-width="2" fill="none"/>
+  <path d="${d.path}" stroke="rgba(255,255,255,0.18)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="5 7"/>
+  <path id="md-${route.id}" d="${d.path}" stroke="rgba(255,255,255,0.92)" stroke-width="4.5" fill="none" stroke-linecap="round" style="stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 0.9s ease"/>
+  ${dots}
+  <path id="mp-${route.id}" d="${d.path}" stroke="none" fill="none"/>
+  <text x="${d.start.x}" y="${d.start.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.start.emoji}</text>
+  <text x="${d.start.x}" y="${sLabelY}" text-anchor="${sAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Poppins,sans-serif" font-weight="600">${d.start.label}</text>
+  <text x="${d.end.x}" y="${d.end.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.end.emoji}</text>
+  <text x="${d.end.x}" y="${eLabelY}" text-anchor="${eAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Poppins,sans-serif" font-weight="600">${d.end.label}</text>
+  <text id="ms-${route.id}" x="-99" y="-99" text-anchor="middle" dominant-baseline="middle" font-size="20" style="transform-box:fill-box;transform-origin:center;transform:scaleX(-1)">🦐</text>
+</svg></div>`;
+}
+
+function initRouteMap(routeId, pct) {
+  const refPath = document.getElementById('mp-' + routeId);
+  if (!refPath) return;
+  const total = refPath.getTotalLength();
+  const done  = total * Math.min(pct, 100) / 100;
+  const donePath = document.getElementById('md-' + routeId);
+  if (donePath) {
+    donePath.style.strokeDasharray  = total;
+    donePath.style.strokeDashoffset = total - done;
+  }
+  const shrimp = document.getElementById('ms-' + routeId);
+  if (shrimp) {
+    const clampedDone = Math.max(0, Math.min(done, total - 0.1));
+    const pt = refPath.getPointAtLength(clampedDone);
+    shrimp.setAttribute('x', pt.x);
+    shrimp.setAttribute('y', pt.y + 2);
+  }
+  const svg = document.getElementById('msvg-' + routeId);
+  if (svg) {
+    svg.querySelectorAll('.ms-dot').forEach(dot => {
+      const mpct = parseFloat(dot.dataset.pct);
+      const mpt  = refPath.getPointAtLength(total * mpct);
+      dot.setAttribute('cx', mpt.x);
+      dot.setAttribute('cy', mpt.y);
+      if (pct / 100 >= mpct) {
+        dot.setAttribute('fill', 'rgba(255,255,255,0.9)');
+        dot.setAttribute('r', '5');
+      }
+    });
+  }
+}
+
 function renderHome() {
   const route     = getActiveRoute();
   const totalKm   = routeTotal(route.id);
@@ -946,6 +1061,8 @@ function renderHome() {
     const ms         = route.milestones || [];
     const nextMs     = ms.find(m => m.km > totalKm);
     const toNext     = nextMs ? nextMs.km - totalKm : 0;
+
+    h += buildRouteMap(route, pct);
 
     h += `<div class="card">
       <div class="prog-header">
@@ -1005,6 +1122,7 @@ function renderHome() {
   }
 
   document.getElementById('home-body').innerHTML = h;
+  requestAnimationFrame(() => initRouteMap(route.id, pct));
 }
 
 // ── Log panel ────────────────────────────────────────────────────────────────
