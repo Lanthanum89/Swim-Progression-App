@@ -1,6 +1,6 @@
 # Shrimpy Swims
 
-A simple, mobile-friendly swim progress tracker for Beth.
+A simple, mobile-friendly swim progress tracker for a friend.
 
 Log each swim and watch cumulative distance move along fun real-world routes (like the English Channel or Loch Ness), with milestone celebrations along the way.
 
