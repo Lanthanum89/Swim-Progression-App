@@ -46,19 +46,34 @@ Swim-Progression-App/
 
 No install required.
 
-## Deployment
+## Live demo
 
-### GitHub Pages
+[https://lanthanum89.github.io/Swim-Progression-App/](https://lanthanum89.github.io/Swim-Progression-App/)
 
-1. Push this repository to GitHub.
-2. Go to repository settings.
-3. Open the Pages section.
-4. Deploy from the `main` branch root.
+Install it as a PWA: open the link on your phone, tap the browser menu, and choose **Add to Home Screen**.
+
+## Deploy your own copy
+
+### Fork and deploy with GitHub Pages (recommended)
+
+1. Click **Fork** at the top of this repository.
+2. In your fork, go to **Settings → Pages**.
+3. Under Source, choose **Deploy from a branch** → `main` / `/ (root)` → Save.
+4. Your app will be live at `https://<your-username>.github.io/Swim-Progression-App/` within a minute.
+
+All data is stored locally in the browser — each person who deploys their own fork gets their own private data.
+
+### Run locally
+
+1. Clone or download the repository.
+2. Open `index.html` directly in your browser.
+
+No install, no build step, no server required.
 
 ### Netlify (drag and drop)
 
 1. Go to <https://app.netlify.com/drop>
-2. Drag `index.html` (or the full project folder).
+2. Drag the project folder onto the page.
 
 ## Data Storage
 
