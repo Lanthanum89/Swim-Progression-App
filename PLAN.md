@@ -1,4 +1,4 @@
-# Beth's Swim Tracker — Plan
+# Shrimpy Swims — Plan
 
 ## Current state (built ✅)
 

@@ -1,4 +1,4 @@
-# Beth's Swim Tracker — Claude Code context
+# Shrimpy Swims — Claude Code context
 
 ## What this is
 
