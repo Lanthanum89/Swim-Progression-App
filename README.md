@@ -46,6 +46,14 @@ Swim-Progression-App/
 
 No install required.
 
+## Screenshots
+
+<div align="center">
+  <img src="screenshots/screenshot-light.png" width="300" alt="Shrimpy Swims — light mode" />
+  &nbsp;&nbsp;
+  <img src="screenshots/screenshot-dark.png"  width="300" alt="Shrimpy Swims — dark mode"  />
+</div>
+
 ## Live demo
 
 [https://lanthanum89.github.io/Swim-Progression-App/](https://lanthanum89.github.io/Swim-Progression-App/)

@@ -1261,8 +1261,8 @@ function renderHistory() {
   h += `<hr class="divider">
   <div class="section-title">Backup &amp; restore</div>
   <div class="card" style="display:flex;gap:10px;padding:16px 20px">
-    <button class="btn-primary" onclick="exportData()" style="flex:1;padding:13px">Export</button>
-    <label class="btn-primary" style="flex:1;padding:13px;text-align:center;cursor:pointer;display:flex;align-items:center;justify-content:center">
+    <button class="btn-primary" onclick="exportData()" style="flex:1;padding:13px;display:flex;align-items:center;justify-content:center">Export</button>
+    <label class="btn-primary" style="flex:1;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center">
       Import
       <input type="file" accept=".json" style="display:none" onchange="importData(this)">
     </label>
