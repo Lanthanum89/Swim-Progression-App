@@ -1,6 +1,10 @@
 # Shrimpy Swims
 
+<<<<<<< HEAD
 A simple, mobile-friendly personal swim progress tracker — built for a friend, but open to anyone who wants to use it or contribute.
+=======
+A simple, mobile-friendly swim progress tracker for a friend.
+>>>>>>> ca33d1b8863dd0c479d4f0629fdf735f915e74ba
 
 Log each swim and watch cumulative distance move along fun real-world routes (like the English Channel or Loch Ness), with milestone celebrations along the way.
 
