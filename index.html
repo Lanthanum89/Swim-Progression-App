@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Swim Tracker">
+<meta name="theme-color" content="#0096c7">
+<title>Beth's Swim Tracker</title>
+<style>
+:root {
+  --blue-deep: #023e8a;
+  --blue: #0096c7;
+  --blue-light: #48cae4;
+  --blue-pale: #caf0f8;
+  --teal: #10b981;
+  --bg: #f0f7ff;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --danger: #ef4444;
+  --nav-h: 64px;
+  --r: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: var(--nav-h);
+}
+
+#app { max-width: 480px; margin: 0 auto; }
+
+/* Header */
+header {
+  background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue) 100%);
+  color: white;
+  padding: 18px 20px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.header-sub { font-size: 13px; opacity: 0.8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Bottom nav */
+nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex;
+  height: var(--nav-h);
+  z-index: 10;
+  box-shadow: 0 -1px 8px rgba(0,0,0,0.06);
+}
+nav button {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 8px 4px 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+nav button.active { color: var(--blue); }
+nav button svg {
+  width: 22px; height: 22px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Panels */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeUp 0.2s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+main { padding: 16px; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: var(--r);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+/* Progress */
+.prog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+.dist-big {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--blue);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.dist-big span { font-size: 15px; font-weight: 500; color: var(--text-muted); }
+.prog-pct { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+.prog-track {
+  background: var(--blue-pale);
+  border-radius: 100px;
+  height: 10px;
+  overflow: hidden;
+  margin: 6px 0 8px;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+  border-radius: 100px;
+  transition: width 0.7s cubic-bezier(.4,0,.2,1);
+  min-width: 4px;
+}
+.prog-next { font-size: 13px; color: var(--text-muted); }
+
+/* Stats row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.stat {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 14px 8px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.stat-val { font-size: 18px; font-weight: 700; color: var(--blue); }
+.stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Log button */
+.btn-log {
+  width: 100%;
+  padding: 17px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  transition: opacity 0.15s;
+}
+.btn-log:active { opacity: 0.85; }
+.btn-log svg {
+  width: 22px; height: 22px;
+  stroke: white; fill: none;
+  stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Milestones */
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+.milestone-list { padding: 4px 0; }
+.milestone-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.milestone-row:last-child { border-bottom: none; }
+.m-icon {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px;
+}
+.m-icon.done { background: #d1fae5; }
+.m-icon.next { background: #dbeafe; }
+.m-icon.todo { background: var(--border); opacity: 0.7; }
+.m-name { font-size: 14px; font-weight: 600; }
+.m-dist { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.m-reached { font-size: 12px; color: var(--teal); font-weight: 600; margin-top: 2px; }
+
+/* Celebration */
+.celebrate {
+  text-align: center;
+  padding: 12px 0 8px;
+}
+.celebrate .trophy { font-size: 52px; margin-bottom: 8px; }
+.celebrate .title { font-size: 22px; font-weight: 800; color: var(--blue); margin-bottom: 6px; }
+.celebrate .sub { font-size: 15px; color: var(--text-muted); }
+
+/* Forms */
+.form-group { margin-bottom: 16px; }
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+label .opt { font-weight: 400; color: var(--text-muted); }
+input, select, textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  color: var(--text);
+  background: white;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+.unit-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.unit-btn {
+  padding: 12px 6px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  text-align: center;
+}
+.unit-btn.sel {
+  border-color: var(--blue);
+  background: #eff6ff;
+  color: var(--blue);
+}
+
+.lengths-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+.lengths-note button {
+  background: none; border: none;
+  color: var(--blue);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  font-family: inherit;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 15px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-primary:active { opacity: 0.85; }
+
+.pool-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* History */
+.session-item {
+  display: flex;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+.session-item:last-child { border-bottom: none; }
+.session-info { flex: 1; min-width: 0; }
+.session-dist { font-size: 16px; font-weight: 700; }
+.session-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.session-note { font-size: 12px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.del-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.del-btn:hover, .del-btn:active { color: var(--danger); }
+
+/* Routes */
+.route-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: white;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.route-card.active { border-color: var(--blue); background: #eff6ff; }
+.route-emoji { font-size: 28px; flex-shrink: 0; }
+.route-info { flex: 1; min-width: 0; }
+.route-name { font-size: 15px; font-weight: 700; }
+.route-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.route-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.route-km { font-size: 12px; font-weight: 600; color: var(--blue); }
+.route-prog { font-size: 12px; color: var(--text-muted); }
+.route-del {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  transition: color 0.15s;
+}
+.route-del:hover { color: var(--danger); }
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--text-muted);
+}
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty p { font-size: 15px; line-height: 1.5; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(var(--nav-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1e293b;
+  color: white;
+  padding: 11px 20px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 100;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 4px 0 16px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>🏊 Beth's Swim Tracker</h1>
+    <div class="header-sub" id="header-sub">Loading…</div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <div class="panel active" id="panel-home">
+      <div id="home-body"></div>
+    </div>
+
+    <!-- LOG -->
+    <div class="panel" id="panel-log">
+      <div class="card">
+        <div class="section-title" style="margin-bottom:16px">Log a swim</div>
+
+        <div class="form-group">
+          <label>Distance</label>
+          <input type="number" id="log-dist" placeholder="e.g. 1.5" min="0" step="any" inputmode="decimal">
+        </div>
+
+        <div class="form-group">
+          <label>Unit</label>
+          <div class="unit-row">
+            <button class="unit-btn sel" data-unit="km"      onclick="pickUnit('km')">km</button>
+            <button class="unit-btn"     data-unit="m"       onclick="pickUnit('m')">metres</button>
+            <button class="unit-btn"     data-unit="lengths" onclick="pickUnit('lengths')">lengths</button>
+          </div>
+          <div class="lengths-note" id="lengths-note" style="display:none">
+            Using <strong id="pool-len-display">25</strong>m pool ·
+            <button onclick="togglePoolSettings()">change</button>
+          </div>
+        </div>
+
+        <div class="form-group" id="pool-settings" style="display:none">
+          <label>Pool length</label>
+          <div class="pool-row">
+            <button class="unit-btn" id="pool-25" onclick="setPool(25)">25 m</button>
+            <button class="unit-btn" id="pool-50" onclick="setPool(50)">50 m</button>
+          </div>
+          <div style="margin-top:8px">
+            <input type="number" id="pool-custom" placeholder="Custom length in metres" min="1" step="any" oninput="setCustomPool(this.value)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="log-date">
+        </div>
+
+        <div class="form-group">
+          <label>Notes <span class="opt">(optional)</span></label>
+          <input type="text" id="log-notes" placeholder="e.g. Felt strong today!">
+        </div>
+
+        <button class="btn-primary" onclick="submitLog()">Save swim</button>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="panel" id="panel-history">
+      <div id="history-body"></div>
+    </div>
+
+    <!-- ROUTES -->
+    <div class="panel" id="panel-routes">
+      <div id="routes-body"></div>
+    </div>
+  </main>
+</div>
+
+<nav>
+  <button class="active" id="nav-home" onclick="goTo('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </button>
+  <button id="nav-log" onclick="goTo('log')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Log
+  </button>
+  <button id="nav-history" onclick="goTo('history')">
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    History
+  </button>
+  <button id="nav-routes" onclick="goTo('routes')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Routes
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Preset routes ────────────────────────────────────────────────────────────
+
+const PRESETS = [
+  {
+    id: 'english-channel',
+    name: 'English Channel',
+    emoji: '🌊',
+    desc: 'Dover to Calais',
+    km: 33.8,
+    milestones: [
+      { km: 0,    label: 'Shakespeare Beach, Dover' },
+      { km: 8.5,  label: 'Left English waters' },
+      { km: 16.9, label: 'Halfway — the shipping lanes!' },
+      { km: 25.4, label: 'French waters ahead' },
+      { km: 33.8, label: 'Cap Gris-Nez, France 🇫🇷' }
+    ]
+  },
+  {
+    id: 'lake-windermere',
+    name: 'Lake Windermere',
+    emoji: '🏔️',
+    desc: 'South to north, full length',
+    km: 16.9,
+    milestones: [
+      { km: 0,    label: 'Lakeside, Newby Bridge' },
+      { km: 5.6,  label: 'Bowness-on-Windermere' },
+      { km: 11.3, label: 'Ferry crossing at Hawkshead' },
+      { km: 16.9, label: 'Waterhead, Ambleside 🎉' }
+    ]
+  },
+  {
+    id: 'loch-ness',
+    name: 'Loch Ness',
+    emoji: '🦕',
+    desc: 'Fort Augustus to Lochend',
+    km: 36.5,
+    milestones: [
+      { km: 0,    label: 'Fort Augustus' },
+      { km: 12,   label: 'Urquhart Castle' },
+      { km: 24,   label: 'Drumnadrochit' },
+      { km: 36.5, label: 'Lochend — watch for Nessie! 🦕' }
+    ]
+  },
+  {
+    id: 'north-channel',
+    name: 'North Channel',
+    emoji: '🍀',
+    desc: 'Scotland to Northern Ireland',
+    km: 34.5,
+    milestones: [
+      { km: 0,    label: 'Portpatrick, Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
+      { km: 11.5, label: 'Into open water' },
+      { km: 23,   label: 'Over halfway' },
+      { km: 34.5, label: 'Donaghadee, Northern Ireland 🍀' }
+    ]
+  },
+  {
+    id: 'strait-of-gibraltar',
+    name: 'Strait of Gibraltar',
+    emoji: '🌍',
+    desc: 'Europe to Africa',
+    km: 14.4,
+    milestones: [
+      { km: 0,    label: 'Tarifa, Spain 🇪🇸' },
+      { km: 7.2,  label: 'Halfway — two continents!' },
+      { km: 14.4, label: 'Tangier, Morocco 🇲🇦' }
+    ]
+  },
+  {
+    id: 'thames',
+    name: 'River Thames',
+    emoji: '🏙️',
+    desc: 'Source to sea (346 km)',
+    km: 346,
+    milestones: [
+      { km: 0,   label: 'Thames Head, Gloucestershire' },
+      { km: 50,  label: 'Oxford' },
+      { km: 120, label: 'Reading' },
+      { km: 185, label: 'Windsor Castle' },
+      { km: 230, label: 'Twickenham' },
+      { km: 260, label: 'London Bridge' },
+      { km: 346, label: 'Thames Estuary — done! 🎉' }
+    ]
+  }
+];
+
+// ── Storage ──────────────────────────────────────────────────────────────────
+
+const K = {
+  sessions:  'swim_sessions_v2',
+  route:     'swim_active_route_v2',
+  customs:   'swim_custom_routes_v2',
+  poolLen:   'swim_pool_len'
+};
+
+const load  = key       => JSON.parse(localStorage.getItem(key) || '[]');
+const save  = (key, v)  => localStorage.setItem(key, JSON.stringify(v));
+const loadS = key       => localStorage.getItem(key);
+const saveS = (key, v)  => localStorage.setItem(key, String(v));
+
+const getSessions    = ()  => load(K.sessions);
+const getCustoms     = ()  => load(K.customs);
+const getActiveId    = ()  => loadS(K.route) || 'english-channel';
+const getPoolLen     = ()  => parseFloat(loadS(K.poolLen) || '25');
+const getAllRoutes    = ()  => [...PRESETS, ...getCustoms()];
+const getActiveRoute = ()  => getAllRoutes().find(r => r.id === getActiveId()) || PRESETS[0];
+
+function routeSessions(routeId) { return getSessions().filter(s => s.route_id === routeId); }
+function routeTotal(routeId)    { return routeSessions(routeId).reduce((s, x) => s + x.dist_km, 0); }
+
+// ── Formatting ───────────────────────────────────────────────────────────────
+
+function fmtKm(km) {
+  if (km === 0) return '0 km';
+  if (km < 1)   return Math.round(km * 1000) + ' m';
+  const s = km.toFixed(2);
+  return s.replace(/\.?0+$/, '') + ' km';
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function toKm(val, unit) {
+  if (unit === 'km')      return val;
+  if (unit === 'm')       return val / 1000;
+  if (unit === 'lengths') return (val * getPoolLen()) / 1000;
+  return val;
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+
+function goTo(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'home')    renderHome();
+  if (name === 'history') renderHistory();
+  if (name === 'routes')  renderRoutes();
+  if (name === 'log')     initLog();
+}
+
+// ── Home panel ───────────────────────────────────────────────────────────────
+
+function renderHome() {
+  const route     = getActiveRoute();
+  const totalKm   = routeTotal(route.id);
+  const pct       = Math.min(100, (totalKm / route.km) * 100);
+  const sessions  = routeSessions(route.id);
+
+  document.getElementById('header-sub').textContent =
+    route.emoji + ' ' + route.name + ' · ' + route.desc;
+
+  let h = '';
+
+  if (pct >= 100) {
+    h += `<div class="card">
+      <div class="celebrate">
+        <div class="trophy">🏆</div>
+        <div class="title">You did it!</div>
+        <div class="sub">You've completed the ${route.name}!<br>Start a new adventure below.</div>
+      </div>
+      <button class="btn-primary" style="margin-top:16px" onclick="goTo('routes')">Choose next route</button>
+    </div>`;
+  } else {
+    const ms         = route.milestones || [];
+    const nextMs     = ms.find(m => m.km > totalKm);
+    const toNext     = nextMs ? nextMs.km - totalKm : 0;
+
+    h += `<div class="card">
+      <div class="prog-header">
+        <div class="dist-big">${fmtKm(totalKm)} <span>of ${fmtKm(route.km)}</span></div>
+        <div class="prog-pct">${pct.toFixed(1)}%</div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
+      ${nextMs ? `<div class="prog-next">📍 ${fmtKm(toNext)} to <em>${nextMs.label}</em></div>` : ''}
+    </div>`;
+  }
+
+  h += `<button class="btn-log" onclick="goTo('log')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Log a swim
+  </button>`;
+
+  const longest = sessions.length ? Math.max(...sessions.map(s => s.dist_km)) : 0;
+  h += `<div class="stats-row">
+    <div class="stat"><div class="stat-val">${sessions.length}</div><div class="stat-lbl">Swims</div></div>
+    <div class="stat"><div class="stat-val">${fmtKm(totalKm)}</div><div class="stat-lbl">Total</div></div>
+    <div class="stat"><div class="stat-val">${longest ? fmtKm(longest) : '—'}</div><div class="stat-lbl">Longest</div></div>
+  </div>`;
+
+  const ms = route.milestones || [];
+  if (ms.length) {
+    h += `<div class="section-title">Milestones</div><div class="card" style="padding:6px 20px;">
+      <div class="milestone-list">`;
+
+    ms.forEach((m, i) => {
+      const done   = totalKm >= m.km;
+      const isNext = !done && ms.slice(0, i).every(p => totalKm >= p.km);
+      const icon   = done ? '✅' : (isNext ? '🎯' : '⭕');
+      const cls    = done ? 'done' : (isNext ? 'next' : 'todo');
+
+      let sub;
+      if (m.km === 0) {
+        sub = `<div class="m-dist">Starting point</div>`;
+      } else if (done) {
+        sub = `<div class="m-reached">Reached! (${fmtKm(m.km)})</div>`;
+      } else {
+        sub = `<div class="m-dist">${fmtKm(m.km - totalKm)} to go</div>`;
+      }
+
+      h += `<div class="milestone-row">
+        <div class="m-icon ${cls}">${icon}</div>
+        <div>
+          <div class="m-name">${m.label}</div>
+          ${sub}
+        </div>
+      </div>`;
+    });
+
+    h += `</div></div>`;
+  }
+
+  document.getElementById('home-body').innerHTML = h;
+}
+
+// ── Log panel ────────────────────────────────────────────────────────────────
+
+let activeUnit = 'km';
+
+function initLog() {
+  document.getElementById('log-dist').value  = '';
+  document.getElementById('log-notes').value = '';
+  document.getElementById('log-date').value  = new Date().toISOString().split('T')[0];
+  document.getElementById('pool-settings').style.display = 'none';
+  pickUnit('km');
+}
+
+function pickUnit(u) {
+  activeUnit = u;
+  document.querySelectorAll('.unit-btn[data-unit]').forEach(b => {
+    b.classList.toggle('sel', b.dataset.unit === u);
+  });
+  const show = u === 'lengths';
+  document.getElementById('lengths-note').style.display = show ? 'block' : 'none';
+  syncPoolDisplay();
+}
+
+function togglePoolSettings() {
+  const el = document.getElementById('pool-settings');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  syncPoolDisplay();
+}
+
+function syncPoolDisplay() {
+  const len = getPoolLen();
+  const d = document.getElementById('pool-len-display');
+  if (d) d.textContent = len;
+  document.getElementById('pool-25').classList.toggle('sel', len === 25);
+  document.getElementById('pool-50').classList.toggle('sel', len === 50);
+}
+
+function setPool(m) {
+  saveS(K.poolLen, m);
+  syncPoolDisplay();
+}
+
+function setCustomPool(v) {
+  const m = parseFloat(v);
+  if (m > 0) { saveS(K.poolLen, m); syncPoolDisplay(); }
+}
+
+function submitLog() {
+  const raw  = parseFloat(document.getElementById('log-dist').value);
+  const date = document.getElementById('log-date').value;
+  const note = document.getElementById('log-notes').value.trim();
+
+  if (!raw || raw <= 0) { showToast('Please enter a distance'); return; }
+  if (!date)            { showToast('Please enter a date');     return; }
+
+  const distKm = toKm(raw, activeUnit);
+  if (distKm <= 0)      { showToast('Distance must be greater than 0'); return; }
+
+  const session = {
+    id:       Date.now().toString(),
+    date,
+    dist_km:  distKm,
+    unit:     activeUnit,
+    unit_val: raw,
+    note,
+    route_id: getActiveId()
+  };
+
+  const all = getSessions();
+  all.push(session);
+  save(K.sessions, all);
+
+  const route    = getActiveRoute();
+  const prevKm   = routeTotal(route.id) - distKm;
+  const newKm    = routeTotal(route.id);
+  const hitMs    = (route.milestones || []).find(m => m.km > 0 && prevKm < m.km && newKm >= m.km);
+  const pct      = Math.min(100, (newKm / route.km) * 100);
+
+  if (hitMs) {
+    showToast(`🎉 Milestone reached: ${hitMs.label}!`);
+  } else {
+    showToast(`✅ ${fmtKm(distKm)} logged · ${pct.toFixed(1)}% complete`);
+  }
+
+  goTo('home');
+}
+
+// ── History panel ────────────────────────────────────────────────────────────
+
+function renderHistory() {
+  const route    = getActiveRoute();
+  const sessions = routeSessions(route.id).slice().reverse();
+
+  let h = `<div class="section-title">${route.emoji} ${route.name} — all swims</div>`;
+
+  if (!sessions.length) {
+    h += `<div class="empty">
+      <div class="empty-icon">🏊</div>
+      <p>No swims logged yet.<br>Tap Log to record your first!</p>
+    </div>`;
+  } else {
+    h += `<div class="card" style="padding:4px 20px">`;
+    sessions.forEach(s => {
+      let distLabel;
+      if (s.unit === 'lengths') {
+        distLabel = `${s.unit_val} lengths <span style="color:var(--text-muted);font-weight:400">(${fmtKm(s.dist_km)})</span>`;
+      } else if (s.unit === 'm') {
+        distLabel = `${s.unit_val} m <span style="color:var(--text-muted);font-weight:400">(${fmtKm(s.dist_km)})</span>`;
+      } else {
+        distLabel = fmtKm(s.dist_km);
+      }
+      h += `<div class="session-item">
+        <div class="session-info">
+          <div class="session-dist">${distLabel}</div>
+          <div class="session-date">${fmtDate(s.date)}</div>
+          ${s.note ? `<div class="session-note">"${s.note}"</div>` : ''}
+        </div>
+        <button class="del-btn" onclick="deleteSession('${s.id}')" title="Delete">✕</button>
+      </div>`;
+    });
+    h += `</div>`;
+  }
+
+  h += `<hr class="divider">
+  <div class="section-title">Backup &amp; restore</div>
+  <div class="card" style="display:flex;gap:10px;padding:16px 20px">
+    <button class="btn-primary" onclick="exportData()" style="flex:1;padding:13px">Export</button>
+    <label class="btn-primary" style="flex:1;padding:13px;text-align:center;cursor:pointer;display:flex;align-items:center;justify-content:center">
+      Import
+      <input type="file" accept=".json" style="display:none" onchange="importData(this)">
+    </label>
+  </div>
+  <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:-6px;margin-bottom:12px">
+    Save the export file to Google Drive to back up your data
+  </div>`;
+
+  document.getElementById('history-body').innerHTML = h;
+}
+
+function deleteSession(id) {
+  if (!confirm('Delete this swim?')) return;
+  save(K.sessions, getSessions().filter(s => s.id !== id));
+  renderHistory();
+  showToast('Swim deleted');
+}
+
+// ── Routes panel ─────────────────────────────────────────────────────────────
+
+function renderRoutes() {
+  const activeId = getActiveId();
+  const all      = getAllRoutes();
+
+  let h = `<div class="section-title">Choose your route</div>`;
+
+  all.forEach(r => {
+    const isActive = r.id === activeId;
+    const done     = routeTotal(r.id);
+    const pct      = Math.min(100, (done / r.km) * 100);
+    const progText = done > 0 ? ` · ${pct.toFixed(0)}% done` : '';
+    const delBtn   = r.custom
+      ? `<button class="route-del" onclick="event.stopPropagation();delRoute('${r.id}')" title="Delete">✕</button>`
+      : '';
+
+    h += `<div class="route-card ${isActive ? 'active' : ''}" onclick="pickRoute('${r.id}')">
+      <div class="route-emoji">${r.emoji}</div>
+      <div class="route-info">
+        <div class="route-name">${r.name}${isActive ? ' ✓' : ''}</div>
+        <div class="route-desc">${r.desc}</div>
+        <div class="route-meta">
+          <span class="route-km">${fmtKm(r.km)}</span>
+          ${progText ? `<span class="route-prog">${progText}</span>` : ''}
+        </div>
+      </div>
+      ${delBtn}
+    </div>`;
+  });
+
+  h += `<hr class="divider">
+  <div class="section-title">Add your own route</div>
+  <div class="card">
+    <div class="form-group">
+      <label>Route name</label>
+      <input type="text" id="c-name" placeholder="e.g. My local lake">
+    </div>
+    <div class="form-group">
+      <label>Total distance</label>
+      <div style="display:grid;grid-template-columns:1fr 90px;gap:8px">
+        <input type="number" id="c-dist" placeholder="e.g. 5" min="0.01" step="any">
+        <select id="c-unit"><option value="km">km</option><option value="m">metres</option></select>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="addCustomRoute()">Add route</button>
+  </div>`;
+
+  document.getElementById('routes-body').innerHTML = h;
+}
+
+function pickRoute(id) {
+  saveS(K.route, id);
+  renderRoutes();
+  showToast('Route selected!');
+}
+
+function addCustomRoute() {
+  const name = document.getElementById('c-name').value.trim();
+  const dist = parseFloat(document.getElementById('c-dist').value);
+  const unit = document.getElementById('c-unit').value;
+
+  if (!name)           { showToast('Please enter a route name'); return; }
+  if (!dist || dist <= 0) { showToast('Please enter a distance'); return; }
+
+  const km = unit === 'm' ? dist / 1000 : dist;
+  const q  = km / 4;
+  const r  = {
+    id: 'custom-' + Date.now(),
+    name,
+    emoji: '🗺️',
+    desc: 'Custom route',
+    km,
+    custom: true,
+    milestones: [
+      { km: 0,   label: 'Start!' },
+      { km: q,   label: '25% of the way' },
+      { km: q*2, label: 'Halfway!' },
+      { km: q*3, label: '75% done' },
+      { km: km,  label: name + ' complete! 🎉' }
+    ]
+  };
+
+  const customs = getCustoms();
+  customs.push(r);
+  save(K.customs, customs);
+  saveS(K.route, r.id);
+  renderRoutes();
+  showToast('Route added!');
+}
+
+function delRoute(id) {
+  if (!confirm('Delete this route and all its swims?')) return;
+  save(K.customs,  getCustoms().filter(r => r.id !== id));
+  save(K.sessions, getSessions().filter(s => s.route_id !== id));
+  if (getActiveId() === id) saveS(K.route, 'english-channel');
+  renderRoutes();
+  showToast('Route deleted');
+}
+
+// ── Backup / Restore ─────────────────────────────────────────────────────────
+
+function exportData() {
+  const payload = {
+    version: 1,
+    exported: new Date().toISOString(),
+    sessions: getSessions(),
+    customRoutes: getCustoms()
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'swim-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup downloaded!');
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!d.version || !Array.isArray(d.sessions)) { showToast('Invalid backup file'); return; }
+      if (!confirm(`Import ${d.sessions.length} swim(s) from backup? This will replace all current data.`)) return;
+      save(K.sessions, d.sessions);
+      if (Array.isArray(d.customRoutes)) save(K.customs, d.customRoutes);
+      showToast(`Imported ${d.sessions.length} swims!`);
+      renderHistory();
+    } catch { showToast('Could not read backup file'); }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// ── Toast ────────────────────────────────────────────────────────────────────
+
+let _toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+
+renderHome();
+</script>
+</body>
+</html>
