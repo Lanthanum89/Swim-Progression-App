@@ -689,7 +689,7 @@ header { position: sticky; overflow: visible; }
 .pace-label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
 .pace-badge { font-size: 12px; font-weight: 800; border-radius: 100px; padding: 4px 12px; white-space: nowrap; }
 .pace-badge.ahead  { background: rgba(16,185,129,0.15); color: var(--teal); }
-.pace-badge.behind { background: rgba(239,68,68,0.12);  color: var(--danger); }
+.pace-badge.behind { background: rgba(245,158,11,0.12); color: #d97706; }
 .pace-badge.on     { background: rgba(147,51,234,0.12); color: var(--purple); }
 
 /* ── Share link (demoted from full button) ────────────────────────────────── */
@@ -722,7 +722,7 @@ header { position: sticky; overflow: visible; }
 .arrival-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 .arrival-compare { margin: 10px 0 4px; display: flex; flex-direction: column; gap: 7px; }
 .arrival-compare-row { display: flex; align-items: center; gap: 8px; }
-.arrival-compare-label { font-size: 11px; font-weight: 700; color: var(--text-muted); width: 36px; flex-shrink: 0; }
+.arrival-compare-label { font-size: 11px; font-weight: 700; color: var(--text-muted); width: 56px; flex-shrink: 0; }
 .arrival-compare-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .arrival-compare-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 .arrival-compare-fill.route { background: linear-gradient(90deg, var(--purple), var(--pink)); }
@@ -748,7 +748,7 @@ header { position: sticky; overflow: visible; }
 /* ── 4-col stats row ─────────────────────────────────────────────────────── */
 .stats-row-4 { grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .stats-row-4 .stat { padding: 11px 4px; }
-.stats-row-4 .stat-val { font-size: 18px; }
+.stats-row-4 .stat-val { font-size: 24px; }
 
 /* ── Started date ────────────────────────────────────────────────────────── */
 .started-date { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; margin-top: -4px; }
@@ -765,6 +765,70 @@ header { position: sticky; overflow: visible; }
 .edit-actions { display: flex; gap: 8px; }
 .btn-secondary { background: none; border: 2px solid var(--border); border-radius: 14px; color: var(--text-muted); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; flex: 1; padding: 11px; transition: border-color 0.15s, color 0.15s; }
 .btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
+
+/* ── P1: Route map polish ──────────────────────────────────────────── */
+.map-wrap.route-complete { box-shadow: 0 0 24px rgba(16,185,129,0.25), 0 6px 24px rgba(0,0,0,0.22); }
+@keyframes ms-dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.milestone-next { background: var(--purple-pale); margin: 0 -20px; padding: 11px 20px !important; border-radius: 12px; }
+
+/* ── P2: Arrival card hero ─────────────────────────────────────────── */
+.arrival-hero { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+.arrival-hero strong { color: var(--purple); }
+.arrival-sub { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; }
+.pace-tip { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 8px; font-style: italic; }
+
+/* ── P3: Header context ────────────────────────────────────────────── */
+.header-context { font-size: 11px; opacity: 0.6; margin-top: 2px; font-weight: 500; letter-spacing: 0.3px; }
+
+/* ── P5: Completion modal ──────────────────────────────────────────── */
+.completion-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.completion-modal {
+  background: var(--card); border-radius: 28px; padding: 32px 24px;
+  text-align: center; max-width: 340px; width: 90%;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  animation: modalIn 0.4s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.85) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.completion-trophy { font-size: 64px; display: block; margin-bottom: 12px; animation: bounce 1s infinite; }
+.completion-title { font-size: 24px; font-weight: 800; color: var(--purple); margin-bottom: 6px; }
+.completion-route { font-size: 15px; color: var(--text-muted); font-weight: 600; margin-bottom: 16px; }
+.completion-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.completion-stat { background: var(--bg); border-radius: 14px; padding: 12px 8px; }
+.completion-stat-val { font-size: 18px; font-weight: 800; color: var(--purple); }
+.completion-stat-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.completion-actions { display: flex; flex-direction: column; gap: 8px; }
+.btn-share-achievement {
+  background: linear-gradient(135deg, var(--teal), #059669);
+  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+}
+
+/* ── P6: Badges ────────────────────────────────────────────────────── */
+.badges-wrap { margin-bottom: 12px; }
+.badges-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.badge {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 100px; padding: 6px 12px 6px 8px;
+  font-size: 12px; font-weight: 700; color: var(--text);
+  transition: opacity 0.2s;
+}
+.badge.locked { opacity: 0.3; filter: grayscale(1); }
+.badge-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
+.badge.earned { border-color: var(--purple); background: var(--purple-pale); }
+[data-theme="dark"] .pace-badge.behind { color: #fbbf24; }
 </style>
 </head>
 <body>
@@ -775,6 +839,7 @@ header { position: sticky; overflow: visible; }
       <button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     </div>
     <div class="header-sub" id="header-sub">Loading…</div>
+    <div class="header-context" id="header-context"></div>
     <div class="header-waves" aria-hidden="true">
       <svg viewBox="0 0 1440 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <path class="wave-a" d="M0 14 Q90 0 180 14 Q270 28 360 14 Q450 0 540 14 Q630 28 720 14 Q810 0 900 14 Q990 28 1080 14 Q1170 0 1260 14 Q1350 28 1440 14 Q1530 0 1620 14 Q1710 28 1800 14 Q1890 0 1980 14 Q2070 28 2160 14 Q2250 0 2340 14 Q2430 28 2520 14 Q2610 0 2700 14 Q2790 28 2880 14" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.5"/>
@@ -1092,22 +1157,25 @@ function buildRouteMap(route, pct) {
   const gId     = 'mg-' + route.id;
   const sAnchor = d.start.anchor || 'middle';
   const eAnchor = d.end.anchor   || 'middle';
-  const sLabelY = d.start.y > 120 ? d.start.y - 18 : d.start.y + 14;
-  const eLabelY = d.end.y   > 120 ? d.end.y   - 18 : d.end.y   + 14;
+  const sLabelY = d.start.y > 120 ? d.start.y - 24 : d.start.y + 24;
+  const eLabelY = d.end.y   > 120 ? d.end.y   - 24 : d.end.y   + 24;
   const dots    = (route.milestones || [])
     .filter(m => m.km > 0 && m.km < route.km)
     .map(m => `<circle class="ms-dot" data-pct="${m.km / route.km}" r="4" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>`)
     .join('');
-  return `<div class="map-wrap"><svg id="msvg-${route.id}" viewBox="0 0 360 220" class="route-map-svg" xmlns="http://www.w3.org/2000/svg">
+  const isComplete = pct >= 100;
+  return `<div class="map-wrap${isComplete ? ' route-complete' : ''}"><svg id="msvg-${route.id}" viewBox="0 0 360 220" class="route-map-svg" xmlns="http://www.w3.org/2000/svg">
   <defs><linearGradient id="${gId}" x1="0" y1="0" x2="0.6" y2="1">
     <stop offset="0%" stop-color="${d.gradient[0]}"/>
     <stop offset="100%" stop-color="${d.gradient[1]}"/>
-  </linearGradient></defs>
+  </linearGradient>
+  <filter id="glow-${route.id}"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
   <rect width="360" height="220" fill="url(#${gId})"/>
   <path d="M 0 178 Q 90 164 180 178 Q 270 192 360 178" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="none"/>
   <path d="M 0 200 Q 90 186 180 200 Q 270 214 360 200" stroke="rgba(255,255,255,0.03)" stroke-width="2" fill="none"/>
   <path d="${d.path}" stroke="rgba(255,255,255,0.18)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="5 7"/>
-  <path id="md-${route.id}" d="${d.path}" stroke="rgba(255,255,255,0.92)" stroke-width="4.5" fill="none" stroke-linecap="round" style="stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 0.9s ease"/>
+  <path id="md-${route.id}" d="${d.path}" stroke="rgba(255,255,255,0.92)" stroke-width="4.5" fill="none" stroke-linecap="round" ${isComplete ? `filter="url(#glow-${route.id})"` : ''} style="stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 0.9s ease"/>
   ${dots}
   <path id="mp-${route.id}" d="${d.path}" stroke="none" fill="none"/>
   <text x="${d.start.x}" y="${d.start.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.start.emoji}</text>
@@ -1137,6 +1205,7 @@ function initRouteMap(routeId, pct) {
   }
   const svg = document.getElementById('msvg-' + routeId);
   if (svg) {
+    let nextDotSet = false;
     svg.querySelectorAll('.ms-dot').forEach(dot => {
       const mpct = parseFloat(dot.dataset.pct);
       const mpt  = refPath.getPointAtLength(total * mpct);
@@ -1145,6 +1214,12 @@ function initRouteMap(routeId, pct) {
       if (pct / 100 >= mpct) {
         dot.setAttribute('fill', 'rgba(255,255,255,0.9)');
         dot.setAttribute('r', '5');
+        dot.style.animation = '';
+      } else if (!nextDotSet) {
+        dot.setAttribute('fill', 'rgba(255,255,255,0.7)');
+        dot.setAttribute('r', '6');
+        dot.style.animation = 'ms-dot-pulse 2s ease-in-out infinite';
+        nextDotSet = true;
       }
     });
   }
@@ -1155,14 +1230,34 @@ function renderHome() {
   const totalKm   = routeTotal(route.id);
   const pct       = Math.min(100, (totalKm / route.km) * 100);
   const sessions  = routeSessions(route.id);
+  const allRoutes = getAllRoutes();
+  const routeIdx  = allRoutes.findIndex(r => r.id === route.id);
 
   document.getElementById('header-sub').textContent =
     route.emoji + ' ' + route.name + ' · ' + route.desc;
 
+  const ctxEl = document.getElementById('header-context');
+  if (ctxEl) {
+    const sorted = sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
+    const dayCount = sorted.length ? Math.max(1, Math.ceil((new Date() - new Date(sorted[0].date + 'T12:00:00')) / 86400000)) : 0;
+    let ctx = `Route ${routeIdx + 1} of ${allRoutes.length} · ${fmtKm(route.km)}`;
+    if (dayCount > 0) ctx += ` · Day ${dayCount}`;
+    ctxEl.textContent = ctx;
+  }
+
   let h = '';
 
   if (pct >= 100) {
-    setTimeout(launchConfetti, 300);
+    if (!_completionShown.has(route.id)) {
+      _completionShown.add(route.id);
+      setTimeout(() => {
+        launchConfetti();
+        showCompletionModal(route, sessions);
+      }, 300);
+    }
+
+    h += buildRouteMap(route, pct);
+
     h += `<div class="card">
       <div class="celebrate">
         <div class="trophy">🏆</div>
@@ -1218,12 +1313,12 @@ function renderHome() {
 
       const compareBlock = timePct !== null ? `<div class="arrival-compare">
           <div class="arrival-compare-row">
-            <span class="arrival-compare-label">Route</span>
+            <span class="arrival-compare-label">Distance</span>
             <div class="arrival-compare-track"><div class="arrival-compare-fill route" style="width:${pct.toFixed(1)}%"></div></div>
             <span class="arrival-compare-pct route">${pct.toFixed(0)}%</span>
           </div>
           <div class="arrival-compare-row">
-            <span class="arrival-compare-label">Time</span>
+            <span class="arrival-compare-label">Elapsed</span>
             <div class="arrival-compare-track"><div class="arrival-compare-fill time" style="width:${timePct.toFixed(1)}%"></div></div>
             <span class="arrival-compare-pct time">${timePct.toFixed(0)}%</span>
           </div>
@@ -1238,9 +1333,27 @@ function renderHome() {
         if (goalDate && estArrival) {
           const goalD    = new Date(goalDate + 'T12:00:00');
           const diffDays = Math.round((goalD - estArrival) / 86400000);
-          if (diffDays > 1)       comparison = `<span class="pace-badge ahead">${diffDays} days ahead of target</span>`;
-          else if (diffDays < -1) comparison = `<span class="pace-badge behind">${Math.abs(diffDays)} days behind target</span>`;
-          else                    comparison = `<span class="pace-badge on">On target</span>`;
+          if (diffDays > 1) {
+            comparison = `<span class="pace-badge ahead">${diffDays} days ahead — keep it up!</span>`;
+          } else if (diffDays < -1) {
+            if (Math.abs(diffDays) <= 14) {
+              comparison = `<span class="pace-badge behind">Slightly behind pace</span>`;
+            } else {
+              comparison = `<span class="pace-badge behind">Behind pace</span>`;
+            }
+            if (goalD > nowD) {
+              const weeksToGoal = (goalD - nowD) / (7 * 86400000);
+              const neededPace = remainingKm / weeksToGoal;
+              const extraNeeded = Math.max(0, neededPace - paceKmPW);
+              if (extraNeeded > 0) {
+                comparison += `<div class="pace-tip">Swim ${(paceKmPW + extraNeeded).toFixed(1)} km/week to hit your target</div>`;
+              }
+            } else {
+              comparison += `<div class="pace-tip">Target date has passed — update it on the Routes screen</div>`;
+            }
+          } else {
+            comparison = `<span class="pace-badge on">On target</span>`;
+          }
         } else if (timePct !== null) {
           const diff = pct - timePct;
           if (diff > 2)       comparison = `<span class="pace-badge ahead">Ahead of pace</span>`;
@@ -1248,14 +1361,14 @@ function renderHome() {
           else                comparison = `<span class="pace-badge on">On pace</span>`;
         }
         paceRow = `<div class="card arrival-card">
-          <div class="arrival-pace">Current pace: ${paceKmPW.toFixed(1)} km / week</div>
-          ${fmtArrival ? `<div class="arrival-date">Estimated arrival: <strong>${fmtArrival}</strong></div>` : ''}
+          ${fmtArrival ? `<div class="arrival-hero">Estimated arrival: <strong>${fmtArrival}</strong></div>` : ''}
+          <div class="arrival-sub">Current pace: ${paceKmPW.toFixed(1)} km / week</div>
           ${compareBlock}
           ${comparison}
         </div>`;
       } else {
         paceRow = `<div class="card arrival-card">
-          <div class="arrival-pace">Log some swims to see your pace</div>
+          <div class="arrival-sub">Log some swims to see your pace</div>
           ${compareBlock || (goalDate ? '' : `<div class="arrival-hint">Set a target date on the Routes screen to track your pace</div>`)}
         </div>`;
       }
@@ -1284,6 +1397,19 @@ function renderHome() {
     h += `<div class="streak-pill">🔥 ${streak} week streak</div>`;
   }
 
+  const badges = getBadges();
+  const earned = badges.filter(b => b.earned);
+  if (earned.length > 0) {
+    h += `<div class="badges-wrap">
+      <div class="section-title">Achievements</div>
+      <div class="badges-grid">
+        ${badges.map(b => `<div class="badge ${b.earned ? 'earned' : 'locked'}">
+          <span class="badge-icon">${b.icon}</span> ${b.label}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
   const ms = route.milestones || [];
   if (ms.length) {
     h += `<div class="section-title">Milestones</div><div class="card" style="padding:6px 20px;">
@@ -1307,7 +1433,7 @@ function renderHome() {
         sub = `<div class="m-dist">${fmtKm(m.km - totalKm)} to go</div>`;
       }
 
-      h += `<div class="milestone-row">
+      h += `<div class="milestone-row${isNext ? ' milestone-next' : ''}">
         <div class="m-icon ${cls}">${icon}</div>
         <div>
           <div class="m-name">${m.label}</div>
@@ -1327,6 +1453,7 @@ function renderHome() {
 
 let activeUnit = 'km';
 let _editId    = null;
+const _completionShown = new Set();
 
 function initLog() {
   document.getElementById('log-dist').value  = '';
@@ -1792,6 +1919,115 @@ function saveEditSession(id) {
   _editId = null;
   renderHistory();
   showToast('Swim updated');
+}
+
+// ── Badges ──────────────────────────────────────────────────────────
+
+const BADGE_DEFS = [
+  { id: 'first-swim',      icon: '🏊', label: 'First Swim',      check: d => d.totalSwims >= 1 },
+  { id: 'first-milestone',  icon: '🎯', label: 'First Milestone', check: d => d.milestonesHit >= 1 },
+  { id: 'open-water',       icon: '🌊', label: 'Open Water',      check: d => d.totalKmAll >= 10 },
+  { id: 'halfway',          icon: '🏅', label: 'Halfway There',   check: d => d.anyHalfway },
+  { id: 'route-complete',   icon: '🏆', label: 'Route Complete',  check: d => d.anyComplete },
+  { id: '100km',            icon: '💯', label: '100 km Club',     check: d => d.totalKmAll >= 100 },
+  { id: 'consistency',      icon: '🔥', label: 'Consistency',     check: d => d.streak >= 4 },
+];
+
+function getBadges() {
+  const allSessions  = getSessions();
+  const allR         = getAllRoutes();
+  const active       = getActiveRoute();
+  const activeSess   = allSessions.filter(s => s.route_id === active.id);
+  const activeKm     = activeSess.reduce((s, x) => s + x.dist_km, 0);
+  const totalKmAll   = allSessions.reduce((s, x) => s + x.dist_km, 0);
+  const milestonesHit = (active.milestones || []).filter(m => m.km > 0 && activeKm >= m.km).length;
+
+  const routeTotals  = new Map();
+  allSessions.forEach(s => routeTotals.set(s.route_id, (routeTotals.get(s.route_id) || 0) + s.dist_km));
+  const anyHalfway   = allR.some(r => (routeTotals.get(r.id) || 0) >= r.km / 2);
+  const anyComplete  = allR.some(r => (routeTotals.get(r.id) || 0) >= r.km);
+  const streak       = calcStreak(activeSess);
+
+  const data = { totalSwims: allSessions.length, totalKmAll, milestonesHit, anyHalfway, anyComplete, streak };
+  return BADGE_DEFS.map(b => ({ ...b, earned: b.check(data) }));
+}
+
+// ── Completion modal ────────────────────────────────────────────────
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function showCompletionModal(route, sessions) {
+  if (document.querySelector('.completion-overlay')) return;
+  const sorted = sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const totalKm = routeTotal(route.id);
+  const totalSwims = sessions.length;
+  let daysText = '';
+  if (sorted.length >= 2) {
+    const days = Math.max(1, Math.ceil((new Date(sorted[sorted.length-1].date + 'T12:00:00') - new Date(sorted[0].date + 'T12:00:00')) / 86400000));
+    daysText = `${days} day${days !== 1 ? 's' : ''}`;
+  }
+  const longestSwim = sessions.length ? fmtKm(Math.max(...sessions.map(s => s.dist_km))) : '—';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'completion-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', 'Route complete');
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  const dismiss = () => overlay.remove();
+  overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') dismiss(); });
+
+  const modal = document.createElement('div');
+  modal.className = 'completion-modal';
+
+  modal.innerHTML = `<span class="completion-trophy">🏆</span>
+    <div class="completion-title">Route Complete!</div>
+    <div class="completion-route">${esc(route.emoji)} ${esc(route.name)}</div>
+    <div class="completion-stats">
+      <div class="completion-stat"><div class="completion-stat-val">${fmtKm(totalKm)}</div><div class="completion-stat-lbl">Distance</div></div>
+      <div class="completion-stat"><div class="completion-stat-val">${totalSwims}</div><div class="completion-stat-lbl">Swims</div></div>
+      ${daysText ? `<div class="completion-stat"><div class="completion-stat-val">${esc(daysText)}</div><div class="completion-stat-lbl">Duration</div></div>` : ''}
+      <div class="completion-stat"><div class="completion-stat-val">${longestSwim}</div><div class="completion-stat-lbl">Longest</div></div>
+    </div>
+    <div class="completion-actions"></div>`;
+
+  const actions = modal.querySelector('.completion-actions');
+
+  if (navigator.share) {
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'btn-primary btn-share-achievement';
+    shareBtn.textContent = 'Share achievement';
+    shareBtn.addEventListener('click', () => { shareAchievement(route); dismiss(); });
+    actions.appendChild(shareBtn);
+  }
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn-primary';
+  nextBtn.textContent = 'Choose next route';
+  nextBtn.addEventListener('click', () => { dismiss(); goTo('routes'); });
+  actions.appendChild(nextBtn);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'btn-secondary';
+  closeBtn.textContent = 'Close';
+  closeBtn.addEventListener('click', dismiss);
+  actions.appendChild(closeBtn);
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  closeBtn.focus();
+}
+
+function shareAchievement(route) {
+  const sess = routeSessions(route.id);
+  const totalKm = routeTotal(route.id);
+  const text = `I completed the ${route.name}! 🏆 ${fmtKm(totalKm)} swum across ${sess.length} sessions. 🦐`;
+  navigator.share({ text }).catch(() => {});
 }
 
 // ── Dark mode ────────────────────────────────────────────────────────────────
