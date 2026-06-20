@@ -1,4 +1,4 @@
-const VERSION = 'swim-v18';
+const VERSION = 'swim-v19';
 const ASSETS  = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {

@@ -722,7 +722,7 @@ header { position: sticky; overflow: visible; }
 .arrival-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 .arrival-compare { margin: 10px 0 4px; display: flex; flex-direction: column; gap: 7px; }
 .arrival-compare-row { display: flex; align-items: center; gap: 8px; }
-.arrival-compare-label { font-size: 11px; font-weight: 700; color: var(--text-muted); width: 56px; flex-shrink: 0; }
+.arrival-compare-label { font-size: 10px; font-weight: 700; color: var(--text-muted); width: 62px; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.3px; }
 .arrival-compare-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .arrival-compare-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 .arrival-compare-fill.route { background: linear-gradient(90deg, var(--purple), var(--pink)); }
@@ -1318,7 +1318,7 @@ function renderHome() {
             <span class="arrival-compare-pct route">${pct.toFixed(0)}%</span>
           </div>
           <div class="arrival-compare-row">
-            <span class="arrival-compare-label">Elapsed</span>
+            <span class="arrival-compare-label">Time Elapsed</span>
             <div class="arrival-compare-track"><div class="arrival-compare-fill time" style="width:${timePct.toFixed(1)}%"></div></div>
             <span class="arrival-compare-pct time">${timePct.toFixed(0)}%</span>
           </div>
