@@ -1,4 +1,4 @@
-const VERSION = 'swim-v16';
+const VERSION = 'swim-v17';
 const ASSETS  = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
@@ -15,10 +15,16 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// Cache-first for local assets; network-only for cross-origin (Google Fonts etc.)
+// Network-first for local assets; fall back to cache when offline
 self.addEventListener('fetch', e => {
   if (!e.request.url.startsWith(self.location.origin)) return;
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request)
+      .then(res => {
+        const clone = res.clone();
+        caches.open(VERSION).then(c => c.put(e.request, clone));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
