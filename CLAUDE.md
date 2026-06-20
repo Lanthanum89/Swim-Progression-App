@@ -17,9 +17,12 @@ A personal swim progress tracker, built for a friend — but open for anyone to 
 
 ```
 Swim-Progression-App/
-  index.html    ← the entire app
-  CLAUDE.md     ← this file
-  PLAN.md       ← feature roadmap
+  index.html      ← the entire app
+  manifest.json   ← PWA manifest
+  sw.js           ← service worker (network-first, cache fallback)
+  CLAUDE.md       ← this file
+  PLAN.md         ← feature roadmap
+  screenshots/    ← dark-mode.jpg, light-mode.jpg
 ```
 
 ## localStorage schema
@@ -33,6 +36,7 @@ All keys are versioned (`_v2`) to avoid collisions with any previous prototype.
 | `swim_custom_routes_v2` | JSON array | User-created routes |
 | `swim_pool_len` | string (number) | Pool length in metres (default 25) |
 | `swim_goal_date_v2` | string | ISO date string for target completion date |
+| `swim_theme` | string | `"dark"` or absent (light default) |
 
 ### Session object
 ```json
@@ -78,20 +82,28 @@ getActiveRoute()  — the currently selected route object
 getGoalDate()     — returns ISO date string for target completion date
 toKm()            — converts km / m / lengths to km
 fmtKm()           — formats km as "1.5 km" or "500 m"
-goTo(name)        — navigate between panels (home/log/history/routes)
-renderHome()      — re-renders the progress/milestone view
-renderHistory()   — renders session history with inline edit support
-renderRoutes()    — renders route picker with completed-route styling
-submitLog()       — saves a new swim session
-editSession(id)   — toggles inline edit form on a history session
-saveEditSession() — saves edited session back to localStorage
-shareProgress()   — triggers Web Share API with progress message
-thisWeekCount()   — count of sessions in last 7 days
-calcStreak()      — consecutive weeks with at least one swim
-isoWeekKey()      — returns numeric ISO week key for a date string
-setGoalDate()     — saves target completion date to localStorage
-exportData()      — downloads a JSON backup file
-importData()      — restores from a JSON backup file
+goTo(name)          — navigate between panels (home/log/history/routes/achievements)
+renderHome()        — re-renders the progress/milestone view
+renderHistory()     — renders session history with inline edit support
+renderRoutes()      — renders route picker with completed-route styling
+renderAchievements()— renders dedicated achievements screen with badge cards
+submitLog()         — saves a new swim session
+editSession(id)     — toggles inline edit form on a history session
+saveEditSession()   — saves edited session back to localStorage
+shareProgress()     — triggers Web Share API with progress message
+thisWeekCount()     — count of sessions in last 7 days
+calcStreak()        — consecutive weeks with at least one swim
+isoWeekKey()        — returns numeric ISO week key for a date string
+setGoalDate()       — saves target completion date to localStorage
+exportData()        — downloads a JSON backup file
+importData()        — restores from a JSON backup file
+BADGE_DEFS          — array of 7 badge definitions with check functions
+getBadges()         — evaluates all badges against current data (single-pass)
+esc(str)            — escapes HTML for safe innerHTML usage (XSS prevention)
+showCompletionModal()— accessible route completion celebration dialog
+launchConfetti()    — spawns confetti pieces inside #app container
+buildRouteMap()     — generates SVG route map with milestone dots
+initRouteMap()      — positions shrimp and animates milestone dots
 ```
 
 ## How to test
@@ -103,6 +115,18 @@ Open `index.html` directly in a browser (no server needed). On mobile, host it f
 **GitHub Pages:** Push to a repo → Settings → Pages → deploy from main branch root.  
 **Netlify:** Drag `index.html` into the Netlify drop zone at netlify.com/drop.
 
+## Navigation
+
+5-tab bottom nav: Home, History, [+ FAB], Routes, Awards.
+The Log button is a raised floating action button (gradient circle, plus icon) in the centre — no label text.
+Panels: `panel-home`, `panel-log`, `panel-history`, `panel-routes`, `panel-achievements`.
+
+## Service worker
+
+`sw.js` uses a **network-first** strategy with cache fallback for offline.
+Bump `VERSION` in `sw.js` on every deploy so returning users get the latest code.
+Current version: `swim-v22`.
+
 ## Conventions
 
 - No comments except where the WHY is non-obvious.
@@ -112,6 +136,9 @@ Open `index.html` directly in a browser (no server needed). On mobile, host it f
 - No `alert()` — use `showToast()` for all user feedback.
 - Don't split into multiple files. Single-file is a hard constraint.
 - `confirm()` is acceptable for destructive actions (delete swim, delete route).
+- Use `esc()` for any user-provided text inserted via innerHTML (XSS prevention).
+- Confetti must stay inside `#app` (`overflow: hidden`) to avoid nav stutter.
+- Nav uses `will-change: transform` for compositor-layer promotion.
 
 ## If adding Supabase later
 
