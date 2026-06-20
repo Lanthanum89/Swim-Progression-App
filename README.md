@@ -6,8 +6,8 @@ Log each swim and watch cumulative distance move along fun real-world routes (li
 
 ## Screenshots
 
-<img width="415" height="856" alt="image" src="https://github.com/user-attachments/assets/af8cdacd-e22b-44ea-a4a7-f3bb9ec3cc34" />
-<img width="435" height="870" alt="Screenshot 2026-06-16 141914" src="https://github.com/user-attachments/assets/4d002f8d-8543-4c94-a202-53b6eb7cd072" />
+<img width="350" alt="Dark mode" src="screenshots/dark-mode.jpg" />
+<img width="350" alt="Light mode" src="screenshots/light-mode.jpg" />
 
 ## Highlights
 
