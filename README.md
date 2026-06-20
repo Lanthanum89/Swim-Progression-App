@@ -88,6 +88,8 @@ Data is stored in browser `localStorage` under these keys:
 - `swim_active_route_v2`
 - `swim_custom_routes_v2`
 - `swim_pool_len`
+- `swim_goal_date_v2`
+- `swim_theme`
 
 ### Session Shape
 

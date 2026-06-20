@@ -720,6 +720,16 @@ header { position: sticky; overflow: visible; }
 .arrival-date { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
 .arrival-date strong { color: var(--purple); }
 .arrival-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.arrival-compare { margin: 10px 0 4px; display: flex; flex-direction: column; gap: 7px; }
+.arrival-compare-row { display: flex; align-items: center; gap: 8px; }
+.arrival-compare-label { font-size: 11px; font-weight: 700; color: var(--text-muted); width: 36px; flex-shrink: 0; }
+.arrival-compare-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.arrival-compare-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.arrival-compare-fill.route { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+.arrival-compare-fill.time  { background: var(--text-muted); opacity: 0.6; }
+.arrival-compare-pct { font-size: 11px; font-weight: 800; width: 30px; text-align: right; flex-shrink: 0; }
+.arrival-compare-pct.route { color: var(--purple); }
+.arrival-compare-pct.time  { color: var(--text-muted); }
 
 /* ── Goal date on routes ─────────────────────────────────────────────────── */
 .route-goal-row {
@@ -1198,6 +1208,27 @@ function renderHome() {
         ? new Date(nowD.getTime() + weeksToGo * 7 * 86400000)
         : null;
 
+      let timePct = null;
+      if (goalDate) {
+        const goalD   = new Date(goalDate + 'T12:00:00');
+        const totalMs = goalD - startD;
+        const elapsed = nowD - startD;
+        if (totalMs > 0 && elapsed >= 0) timePct = Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
+      }
+
+      const compareBlock = timePct !== null ? `<div class="arrival-compare">
+          <div class="arrival-compare-row">
+            <span class="arrival-compare-label">Route</span>
+            <div class="arrival-compare-track"><div class="arrival-compare-fill route" style="width:${pct.toFixed(1)}%"></div></div>
+            <span class="arrival-compare-pct route">${pct.toFixed(0)}%</span>
+          </div>
+          <div class="arrival-compare-row">
+            <span class="arrival-compare-label">Time</span>
+            <div class="arrival-compare-track"><div class="arrival-compare-fill time" style="width:${timePct.toFixed(1)}%"></div></div>
+            <span class="arrival-compare-pct time">${timePct.toFixed(0)}%</span>
+          </div>
+        </div>` : '';
+
       let paceRow = '';
       if (paceKmPW > 0) {
         const fmtArrival = estArrival
@@ -1210,27 +1241,22 @@ function renderHome() {
           if (diffDays > 1)       comparison = `<span class="pace-badge ahead">${diffDays} days ahead of target</span>`;
           else if (diffDays < -1) comparison = `<span class="pace-badge behind">${Math.abs(diffDays)} days behind target</span>`;
           else                    comparison = `<span class="pace-badge on">On target</span>`;
-        } else if (goalDate) {
-          const goalD    = new Date(goalDate + 'T12:00:00');
-          const totalMs  = goalD - startD;
-          const elapsed  = nowD - startD;
-          if (totalMs > 0 && elapsed > 0) {
-            const timePct = Math.min(100, (elapsed / totalMs) * 100);
-            const diff    = pct - timePct;
-            if (diff > 2)       comparison = `<span class="pace-badge ahead">Ahead of pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
-            else if (diff < -2) comparison = `<span class="pace-badge behind">Behind pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
-            else                comparison = `<span class="pace-badge on">On pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
-          }
+        } else if (timePct !== null) {
+          const diff = pct - timePct;
+          if (diff > 2)       comparison = `<span class="pace-badge ahead">Ahead of pace</span>`;
+          else if (diff < -2) comparison = `<span class="pace-badge behind">Behind pace</span>`;
+          else                comparison = `<span class="pace-badge on">On pace</span>`;
         }
         paceRow = `<div class="card arrival-card">
           <div class="arrival-pace">Current pace: ${paceKmPW.toFixed(1)} km / week</div>
           ${fmtArrival ? `<div class="arrival-date">Estimated arrival: <strong>${fmtArrival}</strong></div>` : ''}
+          ${compareBlock}
           ${comparison}
         </div>`;
       } else {
         paceRow = `<div class="card arrival-card">
           <div class="arrival-pace">Log some swims to see your pace</div>
-          ${goalDate ? '' : `<div class="arrival-hint">Set a target date on the Routes screen to track your pace</div>`}
+          ${compareBlock || (goalDate ? '' : `<div class="arrival-hint">Set a target date on the Routes screen to track your pace</div>`)}
         </div>`;
       }
       h += paceRow;
@@ -1591,7 +1617,11 @@ function exportData() {
     version: 1,
     exported: new Date().toISOString(),
     sessions: getSessions(),
-    customRoutes: getCustoms()
+    customRoutes: getCustoms(),
+    activeRoute: getActiveId(),
+    poolLen: getPoolLen(),
+    goalDate: getGoalDate(),
+    theme: localStorage.getItem('swim_theme') || ''
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
@@ -1613,9 +1643,18 @@ function importData(input) {
       if (!d.version || !Array.isArray(d.sessions)) { showToast('Invalid backup file'); return; }
       if (!confirm(`Import ${d.sessions.length} swim(s) from backup? This will replace all current data.`)) return;
       save(K.sessions, d.sessions);
-      if (Array.isArray(d.customRoutes)) save(K.customs, d.customRoutes);
+      save(K.customs, Array.isArray(d.customRoutes) ? d.customRoutes : []);
+      saveS(K.route, typeof d.activeRoute === 'string' && d.activeRoute ? d.activeRoute : 'nyad');
+      saveS(K.poolLen, Number.isFinite(parseFloat(d.poolLen)) && parseFloat(d.poolLen) > 0 ? parseFloat(d.poolLen) : 25);
+      if (typeof d.goalDate === 'string' && d.goalDate) saveS(K.goalDate, d.goalDate); else localStorage.removeItem(K.goalDate);
+      if (typeof d.theme === 'string' && d.theme) setTheme(d.theme);
       showToast(`Imported ${d.sessions.length} swims!`);
-      renderHistory();
+      const activePanel = document.querySelector('.panel.active');
+      if (activePanel) {
+        goTo(activePanel.id.replace('panel-', ''));
+      } else {
+        renderHome();
+      }
     } catch { showToast('Could not read backup file'); }
   };
   reader.readAsText(file);
