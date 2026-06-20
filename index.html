@@ -658,6 +658,32 @@ header { position: sticky; overflow: visible; }
   background-clip: text;
   animation: shimmer 3s linear infinite;
 }
+
+/* ── Completed route ─────────────────────────────────────────────────────── */
+.route-card.completed { border-color: var(--teal); opacity: 0.82; }
+.route-card.completed .route-name { color: var(--text-muted); }
+.route-card.completed.active { border-color: var(--purple); opacity: 1; }
+.route-badge-done {
+  font-size: 11px; font-weight: 800; color: var(--teal);
+  background: rgba(16,185,129,0.13); border-radius: 100px; padding: 2px 8px;
+}
+
+/* ── Goal date + pace card ───────────────────────────────────────────────── */
+.goal-date-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 14px 20px;
+}
+.goal-date-row label {
+  font-size: 13px; font-weight: 700; color: var(--text-muted);
+  white-space: nowrap; display: flex; align-items: center; margin-bottom: 0;
+}
+.goal-date-row input { width: auto; flex: 1; max-width: 160px; padding: 8px 12px; font-size: 14px; }
+.pace-card { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pace-label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.pace-badge { font-size: 12px; font-weight: 800; border-radius: 100px; padding: 4px 12px; white-space: nowrap; }
+.pace-badge.ahead  { background: rgba(16,185,129,0.15); color: var(--teal); }
+.pace-badge.behind { background: rgba(239,68,68,0.12);  color: var(--danger); }
+.pace-badge.on     { background: rgba(147,51,234,0.12); color: var(--purple); }
 </style>
 </head>
 <body>
@@ -689,7 +715,7 @@ header { position: sticky; overflow: visible; }
 
         <div class="form-group">
           <label>Distance</label>
-          <input type="number" id="log-dist" placeholder="e.g. 1.5" min="0" step="any" inputmode="decimal">
+          <input type="number" id="log-dist" placeholder="e.g. 1.5" min="0" step="any" inputmode="decimal" oninput="updateLengthsCalc()">
         </div>
 
         <div class="form-group">
@@ -700,8 +726,7 @@ header { position: sticky; overflow: visible; }
             <button class="unit-btn"     data-unit="lengths" onclick="pickUnit('lengths')">lengths</button>
           </div>
           <div class="lengths-note" id="lengths-note" style="display:none">
-            Using <strong id="pool-len-display">25</strong>m pool ·
-            <button onclick="togglePoolSettings()">change</button>
+            Using <strong id="pool-len-display">25</strong>m pool<span id="lengths-calc"></span>
           </div>
         </div>
 
@@ -875,7 +900,8 @@ const K = {
   sessions:  'swim_sessions_v2',
   route:     'swim_active_route_v2',
   customs:   'swim_custom_routes_v2',
-  poolLen:   'swim_pool_len'
+  poolLen:   'swim_pool_len',
+  goalDate:  'swim_goal_date_v2'
 };
 
 const load  = key       => JSON.parse(localStorage.getItem(key) || '[]');
@@ -889,6 +915,7 @@ const getActiveId    = ()  => loadS(K.route) || 'nyad';
 const getPoolLen     = ()  => parseFloat(loadS(K.poolLen) || '25');
 const getAllRoutes    = ()  => [...PRESETS, ...getCustoms()];
 const getActiveRoute = ()  => getAllRoutes().find(r => r.id === getActiveId()) || PRESETS[0];
+const getGoalDate    = ()  => loadS(K.goalDate) || '';
 
 function routeSessions(routeId) { return getSessions().filter(s => s.route_id === routeId); }
 function routeTotal(routeId)    { return routeSessions(routeId).reduce((s, x) => s + x.dist_km, 0); }
@@ -1081,6 +1108,35 @@ function renderHome() {
       </div>
       ${nextMs ? `<div class="prog-next">📍 ${fmtKm(toNext)} to <em>${nextMs.label}</em></div>` : ''}
     </div>`;
+
+    const goalDate = getGoalDate();
+    h += `<div class="goal-date-row card">
+      <label for="goal-date-input">🎯 Target date</label>
+      <input type="date" id="goal-date-input" value="${goalDate}" onchange="setGoalDate(this.value)">
+    </div>`;
+
+    if (goalDate && sessions.length && pct > 0) {
+      const sorted    = sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
+      const firstDate = sorted[0].date;
+      const today     = new Date().toISOString().split('T')[0];
+      const startD    = new Date(firstDate + 'T12:00:00');
+      const endD      = new Date(goalDate   + 'T12:00:00');
+      const nowD      = new Date(today      + 'T12:00:00');
+      const totalMs   = endD - startD;
+      const elapsedMs = nowD - startD;
+      if (totalMs > 0 && elapsedMs > 0) {
+        const timePct = Math.min(100, (elapsedMs / totalMs) * 100);
+        const diff    = pct - timePct;
+        let badge, cls;
+        if (diff > 2)       { badge = '🟢 Ahead of pace'; cls = 'ahead'; }
+        else if (diff < -2) { badge = '🔴 Behind pace';   cls = 'behind'; }
+        else                { badge = '🟡 On pace';       cls = 'on'; }
+        h += `<div class="pace-card card">
+          <div class="pace-label">${pct.toFixed(0)}% done · ${timePct.toFixed(0)}% of time used</div>
+          <span class="pace-badge ${cls}">${badge}</span>
+        </div>`;
+      }
+    }
   }
 
   h += `<button class="btn-log ripple-host" onclick="goTo('log'); addRipple(event)">
@@ -1150,7 +1206,8 @@ function pickUnit(u) {
     b.classList.toggle('sel', b.dataset.unit === u);
   });
   const show = u === 'lengths';
-  document.getElementById('lengths-note').style.display = show ? 'block' : 'none';
+  document.getElementById('lengths-note').style.display    = show ? 'block' : 'none';
+  document.getElementById('pool-settings').style.display   = show ? 'block' : 'none';
   syncPoolDisplay();
 }
 
@@ -1166,6 +1223,7 @@ function syncPoolDisplay() {
   if (d) d.textContent = len;
   document.getElementById('pool-25').classList.toggle('sel', len === 25);
   document.getElementById('pool-50').classList.toggle('sel', len === 50);
+  updateLengthsCalc();
 }
 
 function setPool(m) {
@@ -1176,6 +1234,15 @@ function setPool(m) {
 function setCustomPool(v) {
   const m = parseFloat(v);
   if (m > 0) { saveS(K.poolLen, m); syncPoolDisplay(); }
+}
+
+function updateLengthsCalc() {
+  const el = document.getElementById('lengths-calc');
+  if (!el) return;
+  const val = parseFloat(document.getElementById('log-dist').value);
+  if (!val || val <= 0) { el.textContent = ''; return; }
+  const metres = Math.round(val * getPoolLen());
+  el.textContent = ' = ' + (metres >= 1000 ? (metres / 1000).toFixed(2).replace(/\.?0+$/, '') + ' km' : metres + ' m');
 }
 
 function submitLog() {
@@ -1290,15 +1357,16 @@ function renderRoutes() {
   let h = `<div class="section-title">Choose your route</div>`;
 
   all.forEach(r => {
-    const isActive = r.id === activeId;
-    const done     = routeTotal(r.id);
-    const pct      = Math.min(100, (done / r.km) * 100);
-    const progText = done > 0 ? ` · ${pct.toFixed(0)}% done` : '';
-    const delBtn   = r.custom
+    const isActive   = r.id === activeId;
+    const done       = routeTotal(r.id);
+    const pct        = Math.min(100, (done / r.km) * 100);
+    const isComplete = done >= r.km;
+    const progText   = done > 0 && !isComplete ? ` · ${pct.toFixed(0)}% done` : '';
+    const delBtn     = r.custom
       ? `<button class="route-del" onclick="event.stopPropagation();delRoute('${r.id}')" title="Delete">✕</button>`
       : '';
 
-    h += `<div class="route-card ${isActive ? 'active' : ''}" onclick="pickRoute('${r.id}')">
+    h += `<div class="route-card ${isActive ? 'active' : ''} ${isComplete ? 'completed' : ''}" onclick="pickRoute('${r.id}')">
       <div class="route-emoji">${r.emoji}</div>
       <div class="route-info">
         <div class="route-name">${r.name}${isActive ? ' ✓' : ''}</div>
@@ -1306,6 +1374,7 @@ function renderRoutes() {
         <div class="route-meta">
           <span class="route-km">${fmtKm(r.km)}</span>
           ${progText ? `<span class="route-prog">${progText}</span>` : ''}
+          ${isComplete ? `<span class="route-badge-done">✅ Completed</span>` : ''}
         </div>
       </div>
       ${delBtn}
@@ -1417,6 +1486,11 @@ function importData(input) {
   };
   reader.readAsText(file);
   input.value = '';
+}
+
+function setGoalDate(val) {
+  if (val) saveS(K.goalDate, val); else localStorage.removeItem(K.goalDate);
+  renderHome();
 }
 
 // ── Toast ────────────────────────────────────────────────────────────────────
