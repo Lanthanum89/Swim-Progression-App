@@ -61,7 +61,7 @@ header {
   z-index: 10;
   clip-path: ellipse(110% 100% at 50% 0%);
 }
-header h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+header h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.2px; text-transform: uppercase; }
 .header-sub { font-size: 13px; opacity: 0.85; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
 
 /* Bottom nav */
@@ -256,6 +256,10 @@ main { padding: 16px; }
 .m-icon.done { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
 .m-icon.next { background: linear-gradient(135deg, var(--purple-pale), var(--lilac)); }
 .m-icon.todo { background: var(--border); opacity: 0.6; }
+.m-icon svg { width: 16px; height: 16px; flex-shrink: 0; }
+.m-icon.done svg { stroke: #059669; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.m-icon.next svg { stroke: var(--purple); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.m-icon.todo svg { stroke: var(--text-muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .m-name { font-size: 14px; font-weight: 700; }
 .m-dist { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
 .m-reached { font-size: 12px; color: var(--teal); font-weight: 800; margin-top: 2px; }
@@ -1140,12 +1144,12 @@ function renderHome() {
         <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
         <div class="prog-shrimp-wrap" style="left:${pct}%"><span class="prog-shrimp">🦐</span></div>
       </div>
-      ${nextMs ? `<div class="prog-next">📍 ${fmtKm(toNext)} to <em>${nextMs.label}</em></div>` : ''}
+      ${nextMs ? `<div class="prog-next">${fmtKm(toNext)} to <em>${nextMs.label}</em></div>` : ''}
     </div>`;
 
     const goalDate = getGoalDate();
     h += `<div class="goal-date-row card">
-      <label for="goal-date-input">🎯 Target date</label>
+      <label for="goal-date-input"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Target date</label>
       <input type="date" id="goal-date-input" value="${goalDate}" onchange="setGoalDate(this.value)">
     </div>`;
 
@@ -1161,9 +1165,9 @@ function renderHome() {
         const timePct = Math.min(100, (elapsedMs / totalMs) * 100);
         const diff    = pct - timePct;
         let badge, cls;
-        if (diff > 2)       { badge = '🟢 Ahead of pace'; cls = 'ahead'; }
-        else if (diff < -2) { badge = '🔴 Behind pace';   cls = 'behind'; }
-        else                { badge = '🟡 On pace';       cls = 'on'; }
+        if (diff > 2)       { badge = 'Ahead of pace'; cls = 'ahead'; }
+        else if (diff < -2) { badge = 'Behind pace';   cls = 'behind'; }
+        else                { badge = 'On pace';       cls = 'on'; }
         h += `<div class="pace-card card">
           <div class="pace-label">${pct.toFixed(0)}% done · ${timePct.toFixed(0)}% of time used</div>
           <span class="pace-badge ${cls}">${badge}</span>
@@ -1171,7 +1175,7 @@ function renderHome() {
       }
     }
     if (navigator.share) {
-      h += `<button class="btn-share ripple-host" onclick="shareProgress(); addRipple(event)">📤 Share my progress</button>`;
+      h += `<button class="btn-share ripple-host" onclick="shareProgress(); addRipple(event)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:7px;vertical-align:middle"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share my progress</button>`;
     }
   }
 
@@ -1201,7 +1205,10 @@ function renderHome() {
     ms.forEach((m, i) => {
       const done   = totalKm >= m.km;
       const isNext = !done && ms.slice(0, i).every(p => totalKm >= p.km);
-      const icon   = done ? '✅' : (isNext ? '🎯' : '⭕');
+      const ICON_DONE = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+      const ICON_NEXT = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg>`;
+      const ICON_TODO = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>`;
+      const icon   = done ? ICON_DONE : (isNext ? ICON_NEXT : ICON_TODO);
       const cls    = done ? 'done' : (isNext ? 'next' : 'todo');
 
       let sub;
@@ -1325,7 +1332,7 @@ function submitLog() {
     showToast(`🎉 Milestone reached: ${hitMs.label}!`);
     launchConfetti();
   } else {
-    showToast(`✅ ${fmtKm(distKm)} logged · ${pct.toFixed(1)}% complete`);
+    showToast(`${fmtKm(distKm)} logged · ${pct.toFixed(1)}% complete`);
   }
 
   goTo('home');
@@ -1432,7 +1439,7 @@ function renderRoutes() {
         <div class="route-meta">
           <span class="route-km">${fmtKm(r.km)}</span>
           ${progText ? `<span class="route-prog">${progText}</span>` : ''}
-          ${isComplete ? `<span class="route-badge-done">✅ Completed</span>` : ''}
+          ${isComplete ? `<span class="route-badge-done">Completed</span>` : ''}
         </div>
       </div>
       ${delBtn}
