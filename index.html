@@ -723,7 +723,7 @@ header { position: sticky; overflow: visible; }
 .arrival-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 .arrival-compare { margin: 10px 0 4px; display: flex; flex-direction: column; gap: 7px; }
 .arrival-compare-row { display: flex; align-items: center; gap: 8px; }
-.arrival-compare-label { font-size: 10px; font-weight: 700; color: var(--text-muted); flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
+.arrival-compare-label { font-size: 10px; font-weight: 700; color: var(--text-muted); width: 82px; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
 .arrival-compare-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .arrival-compare-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 .arrival-compare-fill.route { background: linear-gradient(90deg, var(--purple), var(--pink)); }
@@ -2007,7 +2007,7 @@ function renderAchievements() {
     <strong>${earned.length}</strong> / ${badges.length} earned
   </div>`;
   badges.forEach(b => {
-    h += `<div class="achievement-card card-animate ${b.earned ? '' : 'locked'}">
+    h += `<div class="achievement-card card ${b.earned ? '' : 'locked'}">
       <div class="achievement-icon">${b.icon}</div>
       <div class="achievement-info">
         <div class="achievement-name">${esc(b.label)}</div>
