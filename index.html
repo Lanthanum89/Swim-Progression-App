@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <title>Shrimpy Swims</title>
 <style>
 :root {
@@ -40,7 +40,7 @@
 html { height: -webkit-fill-available; }
 
 body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -61,7 +61,8 @@ header {
   z-index: 10;
   clip-path: ellipse(110% 100% at 50% 0%);
 }
-header h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.2px; text-transform: uppercase; }
+header h1 { font-size: 19px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; line-height: 1; }
+header h1 .h1-light { font-weight: 300; opacity: 0.85; letter-spacing: 3px; }
 .header-sub { font-size: 13px; opacity: 0.85; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
 
 /* Bottom nav */
@@ -97,7 +98,7 @@ nav button.active { color: var(--purple); }
 nav button svg {
   width: 22px; height: 22px;
   stroke: currentColor; fill: none;
-  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
 }
 
 /* Panels */
@@ -198,7 +199,7 @@ main { padding: 16px; }
   box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 3px 10px rgba(147,51,234,0.07);
   border: 1px solid var(--border);
 }
-.stat-val { font-size: 19px; font-weight: 800; color: var(--purple); letter-spacing: -0.5px; }
+.stat-val { font-size: 22px; font-weight: 800; color: var(--purple); letter-spacing: -0.5px; }
 .stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
 
 /* Log button */
@@ -575,7 +576,9 @@ select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 }
 [data-theme="dark"] .m-icon.done { background: linear-gradient(135deg, #064e3b, #065f46); }
 [data-theme="dark"] .btn-primary { box-shadow: 0 4px 12px rgba(155,89,240,0.4); }
-[data-theme="dark"] input, [data-theme="dark"] select { color: var(--text); }
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea { color: var(--text) !important; background: var(--card) !important; }
 [data-theme="dark"] .toast { background: linear-gradient(135deg, #3b1f80, #6b25a0); }
 
 /* ── Route map ───────────────────────────────────────────────────────────── */
@@ -689,20 +692,53 @@ header { position: sticky; overflow: visible; }
 .pace-badge.behind { background: rgba(239,68,68,0.12);  color: var(--danger); }
 .pace-badge.on     { background: rgba(147,51,234,0.12); color: var(--purple); }
 
-/* ── Share button ────────────────────────────────────────────────────────── */
-.btn-share {
-  width: 100%; padding: 13px; background: none;
-  border: 2px solid var(--purple); border-radius: var(--r);
-  font-size: 15px; font-weight: 800; font-family: inherit;
-  color: var(--purple); cursor: pointer; margin-bottom: 12px;
-  display: block; transition: background 0.15s;
+/* ── Share link (demoted from full button) ────────────────────────────────── */
+.link-share {
+  display: block; text-align: center;
+  color: var(--purple); font-size: 13px; font-weight: 700;
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  padding: 4px 0; margin-bottom: 12px; opacity: 0.75; transition: opacity 0.15s;
 }
-.btn-share:active { background: var(--purple-pale); }
+.link-share:hover, .link-share:active { opacity: 1; }
+
+/* ── Progress hero ───────────────────────────────────────────────────────── */
+.prog-hero {
+  font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -2px;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; margin-bottom: 2px;
+}
+.dist-sub { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; }
+.prog-next-block { margin-top: 4px; }
+.prog-next-lbl { font-size: 10px; font-weight: 800; color: var(--purple-light); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 3px; }
+.prog-next-name { font-size: 14px; font-weight: 800; color: var(--text); }
+.prog-next-dist { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+
+/* ── Arrival card ────────────────────────────────────────────────────────── */
+.arrival-card { padding: 16px 20px; }
+.arrival-pace { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+.arrival-date { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.arrival-date strong { color: var(--purple); }
+.arrival-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* ── Goal date on routes ─────────────────────────────────────────────────── */
+.route-goal-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 14px 20px; margin-top: -4px; margin-bottom: 10px;
+  border-radius: 0 0 var(--r) var(--r);
+  background: var(--card); border: 1px solid var(--border);
+  border-top: none;
+}
+.route-goal-row label {
+  font-size: 13px; font-weight: 700; color: var(--text-muted);
+  white-space: nowrap; margin-bottom: 0;
+}
+.route-goal-row input { width: auto; flex: 1; max-width: 160px; padding: 8px 12px; font-size: 14px; }
 
 /* ── 4-col stats row ─────────────────────────────────────────────────────── */
 .stats-row-4 { grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .stats-row-4 .stat { padding: 11px 4px; }
-.stats-row-4 .stat-val { font-size: 15px; }
+.stats-row-4 .stat-val { font-size: 18px; }
 
 /* ── Started date ────────────────────────────────────────────────────────── */
 .started-date { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; margin-top: -4px; }
@@ -725,7 +761,7 @@ header { position: sticky; overflow: visible; }
 <div id="app">
   <header>
     <div class="header-row">
-      <h1>🦐 Shrimpy Swims</h1>
+      <h1><span class="h1-light">Shrimpy</span> Swims</h1>
       <button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     </div>
     <div class="header-sub" id="header-sub">Loading…</div>
@@ -835,11 +871,11 @@ const PRESETS = [
   {
     id: 'nyad',
     name: 'The Nyad',
-    emoji: '🇨🇺',
+    emoji: '🌴',
     desc: 'Havana, Cuba to Key West, Florida',
     km: 177.7,
     milestones: [
-      { km: 0,     label: 'Havana, Cuba 🇨🇺' },
+      { km: 0,     label: 'Havana, Cuba 🌴' },
       { km: 44,    label: 'First night conquered' },
       { km: 88.9,  label: 'Halfway across the Florida Straits!' },
       { km: 133,   label: 'Florida Keys in sight' },
@@ -999,14 +1035,14 @@ const ROUTE_MAP_DATA = {
   'nyad': {
     path:     'M 55 130 C 100 112 155 86 198 68 C 241 50 278 38 306 30',
     gradient: ['#0a2a4a', '#1a6090'],
-    start:    { x: 44,  y: 136, emoji: '🇨🇺', label: 'Havana'   },
-    end:      { x: 312, y: 24,  emoji: '🇺🇸', label: 'Key West' }
+    start:    { x: 44,  y: 136, emoji: '🌴', label: 'Havana'   },
+    end:      { x: 312, y: 24,  emoji: '⭐', label: 'Key West' }
   },
   'english-channel': {
     path:     'M 46 98 C 120 84 220 76 312 68',
     gradient: ['#1e3a4a', '#3a7090'],
     start:    { x: 34,  y: 104, emoji: '🌊', label: 'Dover',  anchor: 'start' },
-    end:      { x: 322, y: 62,  emoji: '🇫🇷', label: 'Calais', anchor: 'end'   }
+    end:      { x: 322, y: 62,  emoji: '🗼', label: 'Calais', anchor: 'end'   }
   },
   'lake-windermere': {
     path:     'M 180 138 C 168 110 192 80 178 22',
@@ -1023,14 +1059,14 @@ const ROUTE_MAP_DATA = {
   'north-channel': {
     path:     'M 288 46 C 244 68 186 96 72 126',
     gradient: ['#1a2a35', '#2a6070'],
-    start:    { x: 300, y: 38,  emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', label: 'Scotland', anchor: 'end'   },
+    start:    { x: 300, y: 38,  emoji: '🏔️', label: 'Scotland', anchor: 'end'   },
     end:      { x: 58,  y: 132, emoji: '🍀', label: 'Ireland',  anchor: 'start' }
   },
   'strait-of-gibraltar': {
     path:     'M 74 46 C 128 68 208 100 284 122',
     gradient: ['#0d4060', '#1a90b8'],
-    start:    { x: 62,  y: 38,  emoji: '🇪🇸', label: 'Tarifa',  anchor: 'start' },
-    end:      { x: 296, y: 128, emoji: '🇲🇦', label: 'Tangier', anchor: 'end'   }
+    start:    { x: 62,  y: 38,  emoji: '☀️', label: 'Tarifa',  anchor: 'start' },
+    end:      { x: 296, y: 128, emoji: '🌙', label: 'Tangier', anchor: 'end'   }
   },
   'thames': {
     path:     'M 28 122 C 72 138 118 88 168 80 C 218 72 262 88 296 66 C 316 58 330 55 334 54',
@@ -1052,22 +1088,22 @@ function buildRouteMap(route, pct) {
     .filter(m => m.km > 0 && m.km < route.km)
     .map(m => `<circle class="ms-dot" data-pct="${m.km / route.km}" r="4" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>`)
     .join('');
-  return `<div class="map-wrap"><svg id="msvg-${route.id}" viewBox="0 0 360 158" class="route-map-svg" xmlns="http://www.w3.org/2000/svg">
+  return `<div class="map-wrap"><svg id="msvg-${route.id}" viewBox="0 0 360 220" class="route-map-svg" xmlns="http://www.w3.org/2000/svg">
   <defs><linearGradient id="${gId}" x1="0" y1="0" x2="0.6" y2="1">
     <stop offset="0%" stop-color="${d.gradient[0]}"/>
     <stop offset="100%" stop-color="${d.gradient[1]}"/>
   </linearGradient></defs>
-  <rect width="360" height="158" fill="url(#${gId})"/>
-  <path d="M 0 128 Q 90 118 180 128 Q 270 138 360 128" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="none"/>
-  <path d="M 0 144 Q 90 134 180 144 Q 270 154 360 144" stroke="rgba(255,255,255,0.03)" stroke-width="2" fill="none"/>
+  <rect width="360" height="220" fill="url(#${gId})"/>
+  <path d="M 0 178 Q 90 164 180 178 Q 270 192 360 178" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="none"/>
+  <path d="M 0 200 Q 90 186 180 200 Q 270 214 360 200" stroke="rgba(255,255,255,0.03)" stroke-width="2" fill="none"/>
   <path d="${d.path}" stroke="rgba(255,255,255,0.18)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="5 7"/>
   <path id="md-${route.id}" d="${d.path}" stroke="rgba(255,255,255,0.92)" stroke-width="4.5" fill="none" stroke-linecap="round" style="stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 0.9s ease"/>
   ${dots}
   <path id="mp-${route.id}" d="${d.path}" stroke="none" fill="none"/>
   <text x="${d.start.x}" y="${d.start.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.start.emoji}</text>
-  <text x="${d.start.x}" y="${sLabelY}" text-anchor="${sAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Plus Jakarta Sans,sans-serif" font-weight="600">${d.start.label}</text>
+  <text x="${d.start.x}" y="${sLabelY}" text-anchor="${sAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Outfit,sans-serif" font-weight="600">${d.start.label}</text>
   <text x="${d.end.x}" y="${d.end.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.end.emoji}</text>
-  <text x="${d.end.x}" y="${eLabelY}" text-anchor="${eAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Plus Jakarta Sans,sans-serif" font-weight="600">${d.end.label}</text>
+  <text x="${d.end.x}" y="${eLabelY}" text-anchor="${eAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Outfit,sans-serif" font-weight="600">${d.end.label}</text>
   <text id="ms-${route.id}" x="-99" y="-99" text-anchor="middle" dominant-baseline="middle" font-size="20" style="transform-box:fill-box;transform-origin:center;transform:scaleX(-1)">🦐</text>
 </svg></div>`;
 }
@@ -1135,47 +1171,72 @@ function renderHome() {
     h += buildRouteMap(route, pct);
 
     h += `<div class="card">
-      <div class="prog-header">
-        <div class="dist-big">${fmtKm(totalKm)} <span>of ${fmtKm(route.km)}</span></div>
-        <div class="prog-pct">${pct.toFixed(1)}%</div>
-      </div>
+      <div class="prog-hero">${pct.toFixed(1)}%</div>
+      <div class="dist-sub">${fmtKm(totalKm)} of ${fmtKm(route.km)}</div>
       ${startedDate}
       <div class="prog-wrap">
         <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
         <div class="prog-shrimp-wrap" style="left:${pct}%"><span class="prog-shrimp">🦐</span></div>
       </div>
-      ${nextMs ? `<div class="prog-next">${fmtKm(toNext)} to <em>${nextMs.label}</em></div>` : ''}
+      ${nextMs ? `<div class="prog-next-block">
+        <div class="prog-next-lbl">Next milestone</div>
+        <div class="prog-next-name">${nextMs.label}</div>
+        <div class="prog-next-dist">${fmtKm(toNext)} to go</div>
+      </div>` : ''}
     </div>`;
 
     const goalDate = getGoalDate();
-    h += `<div class="goal-date-row card">
-      <label for="goal-date-input"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Target date</label>
-      <input type="date" id="goal-date-input" value="${goalDate}" onchange="setGoalDate(this.value)">
-    </div>`;
+    if (sessions.length) {
+      const firstDate    = sorted[0].date;
+      const startD       = new Date(firstDate + 'T12:00:00');
+      const nowD         = new Date();
+      const weeksElapsed = Math.max(0.5, (nowD - startD) / (7 * 86400000));
+      const paceKmPW     = totalKm > 0 ? totalKm / weeksElapsed : 0;
+      const remainingKm  = route.km - totalKm;
+      const weeksToGo    = paceKmPW > 0 ? remainingKm / paceKmPW : null;
+      const estArrival   = weeksToGo != null
+        ? new Date(nowD.getTime() + weeksToGo * 7 * 86400000)
+        : null;
 
-    if (goalDate && sessions.length && pct > 0) {
-      const firstDate = sorted[0].date;
-      const today     = new Date().toISOString().split('T')[0];
-      const startD    = new Date(firstDate + 'T12:00:00');
-      const endD      = new Date(goalDate   + 'T12:00:00');
-      const nowD      = new Date(today      + 'T12:00:00');
-      const totalMs   = endD - startD;
-      const elapsedMs = nowD - startD;
-      if (totalMs > 0 && elapsedMs > 0) {
-        const timePct = Math.min(100, (elapsedMs / totalMs) * 100);
-        const diff    = pct - timePct;
-        let badge, cls;
-        if (diff > 2)       { badge = 'Ahead of pace'; cls = 'ahead'; }
-        else if (diff < -2) { badge = 'Behind pace';   cls = 'behind'; }
-        else                { badge = 'On pace';       cls = 'on'; }
-        h += `<div class="pace-card card">
-          <div class="pace-label">${pct.toFixed(0)}% done · ${timePct.toFixed(0)}% of time used</div>
-          <span class="pace-badge ${cls}">${badge}</span>
+      let paceRow = '';
+      if (paceKmPW > 0) {
+        const fmtArrival = estArrival
+          ? estArrival.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          : null;
+        let comparison = '';
+        if (goalDate && estArrival) {
+          const goalD    = new Date(goalDate + 'T12:00:00');
+          const diffDays = Math.round((goalD - estArrival) / 86400000);
+          if (diffDays > 1)       comparison = `<span class="pace-badge ahead">${diffDays} days ahead of target</span>`;
+          else if (diffDays < -1) comparison = `<span class="pace-badge behind">${Math.abs(diffDays)} days behind target</span>`;
+          else                    comparison = `<span class="pace-badge on">On target</span>`;
+        } else if (goalDate) {
+          const goalD    = new Date(goalDate + 'T12:00:00');
+          const totalMs  = goalD - startD;
+          const elapsed  = nowD - startD;
+          if (totalMs > 0 && elapsed > 0) {
+            const timePct = Math.min(100, (elapsed / totalMs) * 100);
+            const diff    = pct - timePct;
+            if (diff > 2)       comparison = `<span class="pace-badge ahead">Ahead of pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
+            else if (diff < -2) comparison = `<span class="pace-badge behind">Behind pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
+            else                comparison = `<span class="pace-badge on">On pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
+          }
+        }
+        paceRow = `<div class="card arrival-card">
+          <div class="arrival-pace">Current pace: ${paceKmPW.toFixed(1)} km / week</div>
+          ${fmtArrival ? `<div class="arrival-date">Estimated arrival: <strong>${fmtArrival}</strong></div>` : ''}
+          ${comparison}
+        </div>`;
+      } else {
+        paceRow = `<div class="card arrival-card">
+          <div class="arrival-pace">Log some swims to see your pace</div>
+          ${goalDate ? '' : `<div class="arrival-hint">Set a target date on the Routes screen to track your pace</div>`}
         </div>`;
       }
+      h += paceRow;
     }
     if (navigator.share) {
-      h += `<button class="btn-share ripple-host" onclick="shareProgress(); addRipple(event)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:7px;vertical-align:middle"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share my progress</button>`;
+      h += `<button class="link-share" onclick="shareProgress()">Share my progress</button>`;
     }
   }
 
@@ -1444,6 +1505,13 @@ function renderRoutes() {
       </div>
       ${delBtn}
     </div>`;
+    if (isActive) {
+      const goalDate = getGoalDate();
+      h += `<div class="route-goal-row">
+        <label for="goal-date-input">Target date</label>
+        <input type="date" id="goal-date-input" value="${goalDate}" onchange="setGoalDate(this.value)">
+      </div>`;
+    }
   });
 
   h += `<hr class="divider">
@@ -1556,7 +1624,7 @@ function importData(input) {
 
 function setGoalDate(val) {
   if (val) saveS(K.goalDate, val); else localStorage.removeItem(K.goalDate);
-  renderHome();
+  showToast(val ? 'Target date saved' : 'Target date cleared');
 }
 
 // ── Toast ────────────────────────────────────────────────────────────────────
