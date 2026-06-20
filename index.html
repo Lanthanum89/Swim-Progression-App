@@ -1214,6 +1214,7 @@ function initRouteMap(routeId, pct) {
       if (pct / 100 >= mpct) {
         dot.setAttribute('fill', 'rgba(255,255,255,0.9)');
         dot.setAttribute('r', '5');
+        dot.style.animation = '';
       } else if (!nextDotSet) {
         dot.setAttribute('fill', 'rgba(255,255,255,0.7)');
         dot.setAttribute('r', '6');
@@ -1247,10 +1248,13 @@ function renderHome() {
   let h = '';
 
   if (pct >= 100) {
-    setTimeout(() => {
-      launchConfetti();
-      showCompletionModal(route, sessions);
-    }, 300);
+    if (!_completionShown.has(route.id)) {
+      _completionShown.add(route.id);
+      setTimeout(() => {
+        launchConfetti();
+        showCompletionModal(route, sessions);
+      }, 300);
+    }
 
     h += buildRouteMap(route, pct);
 
@@ -1332,16 +1336,20 @@ function renderHome() {
           if (diffDays > 1) {
             comparison = `<span class="pace-badge ahead">${diffDays} days ahead — keep it up!</span>`;
           } else if (diffDays < -1) {
-            const weeksToGoal = Math.max(0.5, (goalD - nowD) / (7 * 86400000));
-            const neededPace = remainingKm / weeksToGoal;
-            const extraNeeded = Math.max(0, neededPace - paceKmPW);
             if (Math.abs(diffDays) <= 14) {
               comparison = `<span class="pace-badge behind">Slightly behind pace</span>`;
             } else {
               comparison = `<span class="pace-badge behind">Behind pace</span>`;
             }
-            if (extraNeeded > 0) {
-              comparison += `<div class="pace-tip">Swim ${(paceKmPW + extraNeeded).toFixed(1)} km/week to hit your target</div>`;
+            if (goalD > nowD) {
+              const weeksToGoal = (goalD - nowD) / (7 * 86400000);
+              const neededPace = remainingKm / weeksToGoal;
+              const extraNeeded = Math.max(0, neededPace - paceKmPW);
+              if (extraNeeded > 0) {
+                comparison += `<div class="pace-tip">Swim ${(paceKmPW + extraNeeded).toFixed(1)} km/week to hit your target</div>`;
+              }
+            } else {
+              comparison += `<div class="pace-tip">Target date has passed — update it on the Routes screen</div>`;
             }
           } else {
             comparison = `<span class="pace-badge on">On target</span>`;
@@ -1445,6 +1453,7 @@ function renderHome() {
 
 let activeUnit = 'km';
 let _editId    = null;
+const _completionShown = new Set();
 
 function initLog() {
   document.getElementById('log-dist').value  = '';
@@ -1942,6 +1951,12 @@ function getBadges() {
 
 // ── Completion modal ────────────────────────────────────────────────
 
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
 function showCompletionModal(route, sessions) {
   if (document.querySelector('.completion-overlay')) return;
   const sorted = sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
@@ -1956,33 +1971,56 @@ function showCompletionModal(route, sessions) {
 
   const overlay = document.createElement('div');
   overlay.className = 'completion-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', 'Route complete');
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
 
-  const shareBtn = navigator.share
-    ? `<button class="btn-primary btn-share-achievement" onclick="shareAchievement('${route.id}');this.closest('.completion-overlay').remove()">Share achievement</button>`
-    : '';
+  const dismiss = () => overlay.remove();
+  overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') dismiss(); });
 
-  overlay.innerHTML = `<div class="completion-modal">
-    <span class="completion-trophy">🏆</span>
+  const modal = document.createElement('div');
+  modal.className = 'completion-modal';
+
+  modal.innerHTML = `<span class="completion-trophy">🏆</span>
     <div class="completion-title">Route Complete!</div>
-    <div class="completion-route">${route.emoji} ${route.name}</div>
+    <div class="completion-route">${esc(route.emoji)} ${esc(route.name)}</div>
     <div class="completion-stats">
       <div class="completion-stat"><div class="completion-stat-val">${fmtKm(totalKm)}</div><div class="completion-stat-lbl">Distance</div></div>
       <div class="completion-stat"><div class="completion-stat-val">${totalSwims}</div><div class="completion-stat-lbl">Swims</div></div>
-      ${daysText ? `<div class="completion-stat"><div class="completion-stat-val">${daysText}</div><div class="completion-stat-lbl">Duration</div></div>` : ''}
+      ${daysText ? `<div class="completion-stat"><div class="completion-stat-val">${esc(daysText)}</div><div class="completion-stat-lbl">Duration</div></div>` : ''}
       <div class="completion-stat"><div class="completion-stat-val">${longestSwim}</div><div class="completion-stat-lbl">Longest</div></div>
     </div>
-    <div class="completion-actions">
-      ${shareBtn}
-      <button class="btn-primary" onclick="this.closest('.completion-overlay').remove();goTo('routes')">Choose next route</button>
-      <button class="btn-secondary" onclick="this.closest('.completion-overlay').remove()">Close</button>
-    </div>
-  </div>`;
+    <div class="completion-actions"></div>`;
+
+  const actions = modal.querySelector('.completion-actions');
+
+  if (navigator.share) {
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'btn-primary btn-share-achievement';
+    shareBtn.textContent = 'Share achievement';
+    shareBtn.addEventListener('click', () => { shareAchievement(route); dismiss(); });
+    actions.appendChild(shareBtn);
+  }
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn-primary';
+  nextBtn.textContent = 'Choose next route';
+  nextBtn.addEventListener('click', () => { dismiss(); goTo('routes'); });
+  actions.appendChild(nextBtn);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'btn-secondary';
+  closeBtn.textContent = 'Close';
+  closeBtn.addEventListener('click', dismiss);
+  actions.appendChild(closeBtn);
+
+  overlay.appendChild(modal);
   document.body.appendChild(overlay);
+  closeBtn.focus();
 }
 
-function shareAchievement(routeId) {
-  const route = getAllRoutes().find(r => r.id === routeId) || getActiveRoute();
+function shareAchievement(route) {
   const sess = routeSessions(route.id);
   const totalKm = routeTotal(route.id);
   const text = `I completed the ${route.name}! 🏆 ${fmtKm(totalKm)} swum across ${sess.length} sessions. 🦐`;
