@@ -1937,12 +1937,15 @@ function getBadges() {
   const allSessions  = getSessions();
   const allR         = getAllRoutes();
   const active       = getActiveRoute();
-  const activeSess   = routeSessions(active.id);
-  const activeKm     = routeTotal(active.id);
+  const activeSess   = allSessions.filter(s => s.route_id === active.id);
+  const activeKm     = activeSess.reduce((s, x) => s + x.dist_km, 0);
   const totalKmAll   = allSessions.reduce((s, x) => s + x.dist_km, 0);
   const milestonesHit = (active.milestones || []).filter(m => m.km > 0 && activeKm >= m.km).length;
-  const anyHalfway   = allR.some(r => routeTotal(r.id) >= r.km / 2);
-  const anyComplete  = allR.some(r => routeTotal(r.id) >= r.km);
+
+  const routeTotals  = new Map();
+  allSessions.forEach(s => routeTotals.set(s.route_id, (routeTotals.get(s.route_id) || 0) + s.dist_km));
+  const anyHalfway   = allR.some(r => (routeTotals.get(r.id) || 0) >= r.km / 2);
+  const anyComplete  = allR.some(r => (routeTotals.get(r.id) || 0) >= r.km);
   const streak       = calcStreak(activeSess);
 
   const data = { totalSwims: allSessions.length, totalKmAll, milestonesHit, anyHalfway, anyComplete, streak };
