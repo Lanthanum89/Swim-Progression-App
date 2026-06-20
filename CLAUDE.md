@@ -32,6 +32,7 @@ All keys are versioned (`_v2`) to avoid collisions with any previous prototype.
 | `swim_active_route_v2` | string | ID of the currently selected route |
 | `swim_custom_routes_v2` | JSON array | User-created routes |
 | `swim_pool_len` | string (number) | Pool length in metres (default 25) |
+| `swim_goal_date_v2` | string | ISO date string for target completion date |
 
 ### Session object
 ```json
@@ -68,19 +69,29 @@ All keys are versioned (`_v2`) to avoid collisions with any previous prototype.
 ## Key JS structure (inside `index.html`)
 
 ```
-PRESETS         — array of 6 built-in routes with milestones
-K               — storage key constants
-getSessions()   — returns all sessions from localStorage
-routeSessions() — sessions filtered to one route
-routeTotal()    — total km swum on a route
-getActiveRoute()— the currently selected route object
-toKm()          — converts km / m / lengths to km
-fmtKm()         — formats km as "1.5 km" or "500 m"
-goTo(name)      — navigate between panels (home/log/history/routes)
-renderHome()    — re-renders the progress/milestone view
-submitLog()     — saves a new swim session
-exportData()    — downloads a JSON backup file
-importData()    — restores from a JSON backup file
+PRESETS           — array of 7 built-in routes with milestones (inc. The Nyad)
+K                 — storage key constants
+getSessions()     — returns all sessions from localStorage
+routeSessions()   — sessions filtered to one route
+routeTotal()      — total km swum on a route
+getActiveRoute()  — the currently selected route object
+getGoalDate()     — returns ISO date string for target completion date
+toKm()            — converts km / m / lengths to km
+fmtKm()           — formats km as "1.5 km" or "500 m"
+goTo(name)        — navigate between panels (home/log/history/routes)
+renderHome()      — re-renders the progress/milestone view
+renderHistory()   — renders session history with inline edit support
+renderRoutes()    — renders route picker with completed-route styling
+submitLog()       — saves a new swim session
+editSession(id)   — toggles inline edit form on a history session
+saveEditSession() — saves edited session back to localStorage
+shareProgress()   — triggers Web Share API with progress message
+thisWeekCount()   — count of sessions in last 7 days
+calcStreak()      — consecutive weeks with at least one swim
+isoWeekKey()      — returns numeric ISO week key for a date string
+setGoalDate()     — saves target completion date to localStorage
+exportData()      — downloads a JSON backup file
+importData()      — restores from a JSON backup file
 ```
 
 ## How to test
