@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <title>Shrimpy Swims</title>
 <style>
 :root {
@@ -40,7 +40,7 @@
 html { height: -webkit-fill-available; }
 
 body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -61,7 +61,8 @@ header {
   z-index: 10;
   clip-path: ellipse(110% 100% at 50% 0%);
 }
-header h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.2px; text-transform: uppercase; }
+header h1 { font-size: 19px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; line-height: 1; }
+header h1 .h1-light { font-weight: 300; opacity: 0.85; letter-spacing: 3px; }
 .header-sub { font-size: 13px; opacity: 0.85; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
 
 /* Bottom nav */
@@ -575,7 +576,9 @@ select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 }
 [data-theme="dark"] .m-icon.done { background: linear-gradient(135deg, #064e3b, #065f46); }
 [data-theme="dark"] .btn-primary { box-shadow: 0 4px 12px rgba(155,89,240,0.4); }
-[data-theme="dark"] input, [data-theme="dark"] select { color: var(--text); }
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea { color: var(--text) !important; background: var(--card) !important; }
 [data-theme="dark"] .toast { background: linear-gradient(135deg, #3b1f80, #6b25a0); }
 
 /* ── Route map ───────────────────────────────────────────────────────────── */
@@ -716,6 +719,7 @@ header { position: sticky; overflow: visible; }
 .arrival-pace { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
 .arrival-date { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
 .arrival-date strong { color: var(--purple); }
+.arrival-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
 /* ── Goal date on routes ─────────────────────────────────────────────────── */
 .route-goal-row {
@@ -757,7 +761,7 @@ header { position: sticky; overflow: visible; }
 <div id="app">
   <header>
     <div class="header-row">
-      <h1>🦐 Shrimpy Swims</h1>
+      <h1><span class="h1-light">Shrimpy</span> Swims</h1>
       <button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     </div>
     <div class="header-sub" id="header-sub">Loading…</div>
@@ -867,11 +871,11 @@ const PRESETS = [
   {
     id: 'nyad',
     name: 'The Nyad',
-    emoji: '🇨🇺',
+    emoji: '🌴',
     desc: 'Havana, Cuba to Key West, Florida',
     km: 177.7,
     milestones: [
-      { km: 0,     label: 'Havana, Cuba 🇨🇺' },
+      { km: 0,     label: 'Havana, Cuba 🌴' },
       { km: 44,    label: 'First night conquered' },
       { km: 88.9,  label: 'Halfway across the Florida Straits!' },
       { km: 133,   label: 'Florida Keys in sight' },
@@ -1031,14 +1035,14 @@ const ROUTE_MAP_DATA = {
   'nyad': {
     path:     'M 55 130 C 100 112 155 86 198 68 C 241 50 278 38 306 30',
     gradient: ['#0a2a4a', '#1a6090'],
-    start:    { x: 44,  y: 136, emoji: '🇨🇺', label: 'Havana'   },
-    end:      { x: 312, y: 24,  emoji: '🇺🇸', label: 'Key West' }
+    start:    { x: 44,  y: 136, emoji: '🌴', label: 'Havana'   },
+    end:      { x: 312, y: 24,  emoji: '⭐', label: 'Key West' }
   },
   'english-channel': {
     path:     'M 46 98 C 120 84 220 76 312 68',
     gradient: ['#1e3a4a', '#3a7090'],
     start:    { x: 34,  y: 104, emoji: '🌊', label: 'Dover',  anchor: 'start' },
-    end:      { x: 322, y: 62,  emoji: '🇫🇷', label: 'Calais', anchor: 'end'   }
+    end:      { x: 322, y: 62,  emoji: '🗼', label: 'Calais', anchor: 'end'   }
   },
   'lake-windermere': {
     path:     'M 180 138 C 168 110 192 80 178 22',
@@ -1055,14 +1059,14 @@ const ROUTE_MAP_DATA = {
   'north-channel': {
     path:     'M 288 46 C 244 68 186 96 72 126',
     gradient: ['#1a2a35', '#2a6070'],
-    start:    { x: 300, y: 38,  emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', label: 'Scotland', anchor: 'end'   },
+    start:    { x: 300, y: 38,  emoji: '🏔️', label: 'Scotland', anchor: 'end'   },
     end:      { x: 58,  y: 132, emoji: '🍀', label: 'Ireland',  anchor: 'start' }
   },
   'strait-of-gibraltar': {
     path:     'M 74 46 C 128 68 208 100 284 122',
     gradient: ['#0d4060', '#1a90b8'],
-    start:    { x: 62,  y: 38,  emoji: '🇪🇸', label: 'Tarifa',  anchor: 'start' },
-    end:      { x: 296, y: 128, emoji: '🇲🇦', label: 'Tangier', anchor: 'end'   }
+    start:    { x: 62,  y: 38,  emoji: '☀️', label: 'Tarifa',  anchor: 'start' },
+    end:      { x: 296, y: 128, emoji: '🌙', label: 'Tangier', anchor: 'end'   }
   },
   'thames': {
     path:     'M 28 122 C 72 138 118 88 168 80 C 218 72 262 88 296 66 C 316 58 330 55 334 54',
@@ -1097,9 +1101,9 @@ function buildRouteMap(route, pct) {
   ${dots}
   <path id="mp-${route.id}" d="${d.path}" stroke="none" fill="none"/>
   <text x="${d.start.x}" y="${d.start.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.start.emoji}</text>
-  <text x="${d.start.x}" y="${sLabelY}" text-anchor="${sAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Plus Jakarta Sans,sans-serif" font-weight="600">${d.start.label}</text>
+  <text x="${d.start.x}" y="${sLabelY}" text-anchor="${sAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Outfit,sans-serif" font-weight="600">${d.start.label}</text>
   <text x="${d.end.x}" y="${d.end.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.end.emoji}</text>
-  <text x="${d.end.x}" y="${eLabelY}" text-anchor="${eAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Plus Jakarta Sans,sans-serif" font-weight="600">${d.end.label}</text>
+  <text x="${d.end.x}" y="${eLabelY}" text-anchor="${eAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Outfit,sans-serif" font-weight="600">${d.end.label}</text>
   <text id="ms-${route.id}" x="-99" y="-99" text-anchor="middle" dominant-baseline="middle" font-size="20" style="transform-box:fill-box;transform-origin:center;transform:scaleX(-1)">🦐</text>
 </svg></div>`;
 }
@@ -1181,34 +1185,55 @@ function renderHome() {
       </div>` : ''}
     </div>`;
 
-    if (sessions.length && pct > 0) {
+    const goalDate = getGoalDate();
+    if (sessions.length) {
       const firstDate    = sorted[0].date;
       const startD       = new Date(firstDate + 'T12:00:00');
       const nowD         = new Date();
       const weeksElapsed = Math.max(0.5, (nowD - startD) / (7 * 86400000));
-      const paceKmPW     = totalKm / weeksElapsed;
+      const paceKmPW     = totalKm > 0 ? totalKm / weeksElapsed : 0;
       const remainingKm  = route.km - totalKm;
       const weeksToGo    = paceKmPW > 0 ? remainingKm / paceKmPW : null;
       const estArrival   = weeksToGo != null
         ? new Date(nowD.getTime() + weeksToGo * 7 * 86400000)
         : null;
-      const goalDate = getGoalDate();
-      let aheadBehind = '';
-      if (goalDate && estArrival) {
-        const goalD    = new Date(goalDate + 'T12:00:00');
-        const diffDays = Math.round((goalD - estArrival) / 86400000);
-        if (diffDays > 1)       aheadBehind = `<span class="pace-badge ahead">${diffDays} days ahead of target</span>`;
-        else if (diffDays < -1) aheadBehind = `<span class="pace-badge behind">${Math.abs(diffDays)} days behind target</span>`;
-        else                    aheadBehind = `<span class="pace-badge on">On target</span>`;
+
+      let paceRow = '';
+      if (paceKmPW > 0) {
+        const fmtArrival = estArrival
+          ? estArrival.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          : null;
+        let comparison = '';
+        if (goalDate && estArrival) {
+          const goalD    = new Date(goalDate + 'T12:00:00');
+          const diffDays = Math.round((goalD - estArrival) / 86400000);
+          if (diffDays > 1)       comparison = `<span class="pace-badge ahead">${diffDays} days ahead of target</span>`;
+          else if (diffDays < -1) comparison = `<span class="pace-badge behind">${Math.abs(diffDays)} days behind target</span>`;
+          else                    comparison = `<span class="pace-badge on">On target</span>`;
+        } else if (goalDate) {
+          const goalD    = new Date(goalDate + 'T12:00:00');
+          const totalMs  = goalD - startD;
+          const elapsed  = nowD - startD;
+          if (totalMs > 0 && elapsed > 0) {
+            const timePct = Math.min(100, (elapsed / totalMs) * 100);
+            const diff    = pct - timePct;
+            if (diff > 2)       comparison = `<span class="pace-badge ahead">Ahead of pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
+            else if (diff < -2) comparison = `<span class="pace-badge behind">Behind pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
+            else                comparison = `<span class="pace-badge on">On pace · ${pct.toFixed(0)}% done, ${timePct.toFixed(0)}% of time used</span>`;
+          }
+        }
+        paceRow = `<div class="card arrival-card">
+          <div class="arrival-pace">Current pace: ${paceKmPW.toFixed(1)} km / week</div>
+          ${fmtArrival ? `<div class="arrival-date">Estimated arrival: <strong>${fmtArrival}</strong></div>` : ''}
+          ${comparison}
+        </div>`;
+      } else {
+        paceRow = `<div class="card arrival-card">
+          <div class="arrival-pace">Log some swims to see your pace</div>
+          ${goalDate ? '' : `<div class="arrival-hint">Set a target date on the Routes screen to track your pace</div>`}
+        </div>`;
       }
-      const fmtArrival = estArrival
-        ? estArrival.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-        : null;
-      h += `<div class="card arrival-card">
-        <div class="arrival-pace">Current pace: ${paceKmPW.toFixed(1)} km / week</div>
-        ${fmtArrival ? `<div class="arrival-date">Estimated arrival: <strong>${fmtArrival}</strong></div>` : ''}
-        ${aheadBehind}
-      </div>`;
+      h += paceRow;
     }
     if (navigator.share) {
       h += `<button class="link-share" onclick="shareProgress()">Share my progress</button>`;
