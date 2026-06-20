@@ -49,7 +49,7 @@ body {
   overscroll-behavior-y: none;
 }
 
-#app { max-width: 480px; margin: 0 auto; }
+#app { max-width: 480px; margin: 0 auto; position: relative; }
 
 /* Header */
 header {
@@ -61,7 +61,7 @@ header {
   z-index: 10;
   clip-path: ellipse(110% 100% at 50% 0%);
 }
-header h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.3px; }
+header h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
 .header-sub { font-size: 13px; opacity: 0.85; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
 
 /* Bottom nav */
@@ -116,7 +116,7 @@ main { padding: 16px; }
   border-radius: var(--r);
   padding: 20px;
   margin-bottom: 12px;
-  box-shadow: 0 2px 12px rgba(147,51,234,0.08);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(147,51,234,0.07);
   border: 1px solid var(--border);
 }
 
@@ -143,7 +143,7 @@ main { padding: 16px; }
 .prog-track {
   background: var(--lilac);
   border-radius: 100px;
-  height: 12px;
+  height: 8px;
   overflow: hidden;
 }
 .prog-shrimp-wrap {
@@ -195,11 +195,11 @@ main { padding: 16px; }
   border-radius: 16px;
   padding: 14px 8px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(147,51,234,0.08);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 3px 10px rgba(147,51,234,0.07);
   border: 1px solid var(--border);
 }
-.stat-val { font-size: 19px; font-weight: 900; color: var(--purple); }
-.stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 700; }
+.stat-val { font-size: 19px; font-weight: 900; color: var(--purple); letter-spacing: -0.5px; }
+.stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
 
 /* Log button */
 .btn-log {
@@ -230,11 +230,11 @@ main { padding: 16px; }
 
 /* Milestones */
 .section-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 900;
   color: var(--purple-light);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   margin-bottom: 10px;
 }
 .milestone-list { padding: 4px 0; }
@@ -621,7 +621,7 @@ header { position: sticky; overflow: visible; }
   100% { transform: translateY(80vh)  rotate(720deg); opacity: 0; }
 }
 .confetti-piece {
-  position: fixed;
+  position: absolute;
   width: 10px; height: 10px;
   border-radius: 2px;
   pointer-events: none;
@@ -684,6 +684,37 @@ header { position: sticky; overflow: visible; }
 .pace-badge.ahead  { background: rgba(16,185,129,0.15); color: var(--teal); }
 .pace-badge.behind { background: rgba(239,68,68,0.12);  color: var(--danger); }
 .pace-badge.on     { background: rgba(147,51,234,0.12); color: var(--purple); }
+
+/* ── Share button ────────────────────────────────────────────────────────── */
+.btn-share {
+  width: 100%; padding: 13px; background: none;
+  border: 2px solid var(--purple); border-radius: var(--r);
+  font-size: 15px; font-weight: 800; font-family: inherit;
+  color: var(--purple); cursor: pointer; margin-bottom: 12px;
+  display: block; transition: background 0.15s;
+}
+.btn-share:active { background: var(--purple-pale); }
+
+/* ── 4-col stats row ─────────────────────────────────────────────────────── */
+.stats-row-4 { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.stats-row-4 .stat { padding: 11px 4px; }
+.stats-row-4 .stat-val { font-size: 15px; }
+
+/* ── Started date ────────────────────────────────────────────────────────── */
+.started-date { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; margin-top: -4px; }
+
+/* ── Streak pill ─────────────────────────────────────────────────────────── */
+.streak-pill { text-align: center; font-size: 13px; font-weight: 800; color: var(--purple); background: var(--purple-pale); border-radius: 100px; padding: 8px 16px; margin-bottom: 12px; }
+
+/* ── Session edit ────────────────────────────────────────────────────────── */
+.edit-btn { flex-shrink: 0; background: none; border: none; font-size: 15px; cursor: pointer; padding: 6px; line-height: 1; opacity: 0.45; transition: opacity 0.15s; }
+.edit-btn:hover, .edit-btn:active { opacity: 1; }
+.session-edit-form { padding: 10px 0 4px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+.edit-row { display: flex; gap: 8px; }
+.edit-row input, .edit-row select { margin: 0; font-size: 14px; padding: 10px 12px; }
+.edit-actions { display: flex; gap: 8px; }
+.btn-secondary { background: none; border: 2px solid var(--border); border-radius: 14px; color: var(--text-muted); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; flex: 1; padding: 11px; transition: border-color 0.15s, color 0.15s; }
+.btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
 </style>
 </head>
 <body>
@@ -691,7 +722,7 @@ header { position: sticky; overflow: visible; }
   <header>
     <div class="header-row">
       <h1>🦐 Shrimpy Swims</h1>
-      <button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+      <button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     </div>
     <div class="header-sub" id="header-sub">Loading…</div>
     <div class="header-waves" aria-hidden="true">
@@ -1094,6 +1125,8 @@ function renderHome() {
     const ms         = route.milestones || [];
     const nextMs     = ms.find(m => m.km > totalKm);
     const toNext     = nextMs ? nextMs.km - totalKm : 0;
+    const sorted     = sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
+    const startedDate = sorted.length ? `<div class="started-date">Started ${fmtDate(sorted[0].date)}</div>` : '';
 
     h += buildRouteMap(route, pct);
 
@@ -1102,6 +1135,7 @@ function renderHome() {
         <div class="dist-big">${fmtKm(totalKm)} <span>of ${fmtKm(route.km)}</span></div>
         <div class="prog-pct">${pct.toFixed(1)}%</div>
       </div>
+      ${startedDate}
       <div class="prog-wrap">
         <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
         <div class="prog-shrimp-wrap" style="left:${pct}%"><span class="prog-shrimp">🦐</span></div>
@@ -1116,7 +1150,6 @@ function renderHome() {
     </div>`;
 
     if (goalDate && sessions.length && pct > 0) {
-      const sorted    = sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
       const firstDate = sorted[0].date;
       const today     = new Date().toISOString().split('T')[0];
       const startD    = new Date(firstDate + 'T12:00:00');
@@ -1137,6 +1170,9 @@ function renderHome() {
         </div>`;
       }
     }
+    if (navigator.share) {
+      h += `<button class="btn-share ripple-host" onclick="shareProgress(); addRipple(event)">📤 Share my progress</button>`;
+    }
   }
 
   h += `<button class="btn-log ripple-host" onclick="goTo('log'); addRipple(event)">
@@ -1144,12 +1180,18 @@ function renderHome() {
     Log a swim
   </button>`;
 
-  const longest = sessions.length ? Math.max(...sessions.map(s => s.dist_km)) : 0;
-  h += `<div class="stats-row">
+  const longest   = sessions.length ? Math.max(...sessions.map(s => s.dist_km)) : 0;
+  const weekCount = thisWeekCount(sessions);
+  const streak    = calcStreak(sessions);
+  h += `<div class="stats-row stats-row-4">
     <div class="stat"><div class="stat-val">${sessions.length}</div><div class="stat-lbl">Swims</div></div>
     <div class="stat"><div class="stat-val">${fmtKm(totalKm)}</div><div class="stat-lbl">Total</div></div>
-    <div class="stat"><div class="stat-val">${longest ? fmtKm(longest) : 'none'}</div><div class="stat-lbl">Longest</div></div>
+    <div class="stat"><div class="stat-val">${longest ? fmtKm(longest) : '—'}</div><div class="stat-lbl">Longest</div></div>
+    <div class="stat"><div class="stat-val">${weekCount}</div><div class="stat-lbl">This week</div></div>
   </div>`;
+  if (streak >= 2) {
+    h += `<div class="streak-pill">🔥 ${streak} week streak</div>`;
+  }
 
   const ms = route.milestones || [];
   if (ms.length) {
@@ -1190,6 +1232,7 @@ function renderHome() {
 // ── Log panel ────────────────────────────────────────────────────────────────
 
 let activeUnit = 'km';
+let _editId    = null;
 
 function initLog() {
   document.getElementById('log-dist').value  = '';
@@ -1319,8 +1362,25 @@ function renderHistory() {
           ${s.pace ? `<div class="session-note">⏱ ${s.pace} /100m</div>` : ''}
           ${s.note ? `<div class="session-note">"${s.note}"</div>` : ''}
         </div>
+        <button class="edit-btn" onclick="editSession('${s.id}')" title="Edit">✏️</button>
         <button class="del-btn" onclick="deleteSession('${s.id}')" title="Delete">✕</button>
-      </div>`;
+      </div>
+      ${_editId === s.id ? `<div class="session-edit-form">
+        <div class="edit-row"><input type="date" id="edit-date-${s.id}" value="${s.date}" style="flex:1"></div>
+        <div class="edit-row">
+          <input type="number" id="edit-dist-${s.id}" value="${s.unit_val != null ? s.unit_val : s.dist_km}" step="any" min="0" inputmode="decimal" style="flex:1">
+          <select id="edit-unit-${s.id}" style="width:95px">
+            <option value="km" ${(s.unit||'km')==='km'?'selected':''}>km</option>
+            <option value="m" ${s.unit==='m'?'selected':''}>m</option>
+            <option value="lengths" ${s.unit==='lengths'?'selected':''}>lengths</option>
+          </select>
+        </div>
+        <div class="edit-row"><input type="text" id="edit-note-${s.id}" value="${(s.note||'').replace(/"/g,'&quot;')}" placeholder="Notes" style="flex:1"></div>
+        <div class="edit-actions">
+          <button class="btn-primary" onclick="saveEditSession('${s.id}')" style="flex:1;padding:11px;font-size:14px;box-shadow:none">Save</button>
+          <button class="btn-secondary" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>` : ''}`;
     });
     h += `</div>`;
   }
@@ -1416,6 +1476,7 @@ function addCustomRoute() {
   if (!dist || dist <= 0) { showToast('Please enter a distance'); return; }
 
   const km = unit === 'm' ? dist / 1000 : dist;
+  if (km < 0.5) { showToast('Route must be at least 0.5 km'); return; }
   const q  = km / 4;
   const r  = {
     id: 'custom-' + Date.now(),
@@ -1518,13 +1579,13 @@ function addRipple(e) {
 }
 
 function launchConfetti() {
-  const colours = ['#9333ea','#ec4899','#c084fc','#fbbf24','#34d399','#60a5fa'];
-  const count   = 60;
-  for (let i = 0; i < count; i++) {
-    const el     = document.createElement('div');
+  const colours   = ['#9333ea','#ec4899','#c084fc','#fbbf24','#34d399','#60a5fa'];
+  const container = document.getElementById('app');
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
     el.className = 'confetti-piece';
     el.style.cssText = `
-      left:${Math.random() * 100}vw;
+      left:${Math.random() * 100}%;
       top:0;
       background:${colours[Math.floor(Math.random() * colours.length)]};
       border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
@@ -1533,7 +1594,7 @@ function launchConfetti() {
       animation-duration:${1.2 + Math.random() * 1.4}s;
       animation-delay:${Math.random() * 0.5}s;
     `;
-    document.body.appendChild(el);
+    container.appendChild(el);
     el.addEventListener('animationend', () => el.remove());
   }
 }
@@ -1549,6 +1610,78 @@ function animateCards(panelId) {
     });
 }
 
+// ── Share ─────────────────────────────────────────────────────────────────────
+
+function shareProgress() {
+  const route   = getActiveRoute();
+  const totalKm = routeTotal(route.id);
+  const pct     = Math.min(100, (totalKm / route.km) * 100);
+  const text    = `I've swum ${fmtKm(totalKm)} of ${route.name} — ${pct.toFixed(0)}% done! 🦐 ${route.desc} (${fmtKm(route.km)} total)`;
+  navigator.share({ text }).catch(() => {});
+}
+
+// ── Stats helpers ─────────────────────────────────────────────────────────────
+
+function thisWeekCount(sessions) {
+  const cutoff = new Date(Date.now() - 6 * 86400000).toISOString().split('T')[0];
+  const today  = new Date().toISOString().split('T')[0];
+  return sessions.filter(s => s.date >= cutoff && s.date <= today).length;
+}
+
+function isoWeekKey(dateStr) {
+  const d   = new Date(dateStr + 'T12:00:00');
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() + 4 - day);
+  const yr  = d.getFullYear();
+  const wk  = Math.ceil(((d - new Date(yr, 0, 1)) / 86400000 + 1) / 7);
+  return yr * 100 + wk;
+}
+
+function calcStreak(sessions) {
+  if (!sessions.length) return 0;
+  const weeks  = new Set(sessions.map(s => isoWeekKey(s.date)));
+  const today  = new Date();
+  const thisWk = isoWeekKey(today.toISOString().split('T')[0]);
+  const lastWkD = new Date(today.getTime() - 7 * 86400000);
+  const lastWk  = isoWeekKey(lastWkD.toISOString().split('T')[0]);
+  let d = weeks.has(thisWk) ? new Date(today) : (weeks.has(lastWk) ? lastWkD : null);
+  if (!d) return 0;
+  let count = 0;
+  while (true) {
+    const wk = isoWeekKey(d.toISOString().split('T')[0]);
+    if (!weeks.has(wk)) break;
+    count++;
+    d = new Date(d.getTime() - 7 * 86400000);
+  }
+  return count;
+}
+
+// ── Session edit ──────────────────────────────────────────────────────────────
+
+function editSession(id) {
+  _editId = _editId === id ? null : id;
+  renderHistory();
+}
+
+function cancelEdit() {
+  _editId = null;
+  renderHistory();
+}
+
+function saveEditSession(id) {
+  const raw  = parseFloat(document.getElementById('edit-dist-' + id).value);
+  const unit = document.getElementById('edit-unit-' + id).value;
+  const date = document.getElementById('edit-date-' + id).value;
+  const note = document.getElementById('edit-note-' + id).value.trim();
+  if (!raw || raw <= 0) { showToast('Please enter a distance'); return; }
+  if (!date)            { showToast('Please enter a date');     return; }
+  const distKm = toKm(raw, unit);
+  save(K.sessions, getSessions().map(s => s.id !== id ? s : { ...s, date, dist_km: distKm, unit, unit_val: raw, note }));
+  _editId = null;
+  renderHistory();
+  showToast('Swim updated');
+}
+
 // ── Dark mode ────────────────────────────────────────────────────────────────
 
 function toggleTheme() {
@@ -1559,7 +1692,9 @@ function toggleTheme() {
 function setTheme(t) {
   document.documentElement.dataset.theme = t;
   localStorage.setItem('swim_theme', t);
-  document.getElementById('theme-btn').textContent = t === 'dark' ? '☀️' : '🌙';
+  const MOON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+  const SUN  = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+  document.getElementById('theme-btn').innerHTML = t === 'dark' ? SUN : MOON;
 }
 
 (function initTheme() {
