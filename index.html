@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <title>Shrimpy Swims</title>
 <style>
 :root {
@@ -40,7 +40,7 @@
 html { height: -webkit-fill-available; }
 
 body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -1061,9 +1061,9 @@ function buildRouteMap(route, pct) {
   ${dots}
   <path id="mp-${route.id}" d="${d.path}" stroke="none" fill="none"/>
   <text x="${d.start.x}" y="${d.start.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.start.emoji}</text>
-  <text x="${d.start.x}" y="${sLabelY}" text-anchor="${sAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Poppins,sans-serif" font-weight="600">${d.start.label}</text>
+  <text x="${d.start.x}" y="${sLabelY}" text-anchor="${sAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Plus Jakarta Sans,sans-serif" font-weight="600">${d.start.label}</text>
   <text x="${d.end.x}" y="${d.end.y}" text-anchor="middle" font-size="18" dominant-baseline="middle">${d.end.emoji}</text>
-  <text x="${d.end.x}" y="${eLabelY}" text-anchor="${eAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Poppins,sans-serif" font-weight="600">${d.end.label}</text>
+  <text x="${d.end.x}" y="${eLabelY}" text-anchor="${eAnchor}" font-size="9" fill="rgba(255,255,255,0.75)" font-family="Plus Jakarta Sans,sans-serif" font-weight="600">${d.end.label}</text>
   <text id="ms-${route.id}" x="-99" y="-99" text-anchor="middle" dominant-baseline="middle" font-size="20" style="transform-box:fill-box;transform-origin:center;transform:scaleX(-1)">🦐</text>
 </svg></div>`;
 }
@@ -1461,8 +1461,8 @@ function renderRoutes() {
 
 function pickRoute(id) {
   saveS(K.route, id);
-  goTo('home');
   showToast('Route selected!');
+  setTimeout(() => goTo('home'), 0);
 }
 
 function addCustomRoute() {
