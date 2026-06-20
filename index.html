@@ -1389,10 +1389,8 @@ function renderHistory() {
   <div class="section-title">Backup &amp; restore</div>
   <div class="card" style="display:flex;gap:10px;padding:16px 20px">
     <button class="btn-primary" onclick="exportData()" style="flex:1;padding:13px;display:flex;align-items:center;justify-content:center">Export</button>
-    <label class="btn-primary" style="flex:1;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center">
-      Import
-      <input type="file" accept=".json" style="display:none" onchange="importData(this)">
-    </label>
+    <button class="btn-primary" onclick="document.getElementById('import-file').click()" style="flex:1;padding:13px;display:flex;align-items:center;justify-content:center">Import</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
   </div>
   <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:-6px;margin-bottom:12px">
     Save the export file to Google Drive to back up your data
@@ -1463,7 +1461,7 @@ function renderRoutes() {
 
 function pickRoute(id) {
   saveS(K.route, id);
-  renderRoutes();
+  goTo('home');
   showToast('Route selected!');
 }
 
